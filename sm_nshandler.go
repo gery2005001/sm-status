@@ -61,7 +61,6 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 func getNodeStatusTableHTML() string {
 	//输出Node 状态表
 	config := GetConfig()
-	newVerMsg := false
 	//config.refreshNodeStatus()
 	htmlData := ""
 	for n := 0; n < len(config.Node); n++ {
@@ -82,7 +81,6 @@ func getNodeStatusTableHTML() string {
 			verColor := ""
 			if config.Node[n].HasNewVer {
 				verColor = ST_Failed_CSS
-				newVerMsg = true
 			}
 			//生成页面
 			htmlData += "<table>"
@@ -132,9 +130,8 @@ func getNodeStatusTableHTML() string {
 			htmlData += "</table>"
 		}
 	}
-	if newVerMsg {
-		htmlData += fmt.Sprintf("<span class=\"st-failed\">Found new version <b>%s</b></span></br>", config.LatestVer)
-	}
+
+	htmlData += fmt.Sprintf("latest version: <b>%s</b></br>", config.LatestVer)
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/post\">切换到Post State</a></br>"
