@@ -68,13 +68,18 @@ func getNodeStatusTableHTML() string {
 		if config.Node[n].Enable {
 			//获取node状态
 			isSyncedText := ""
-			stColor := ST_Failed_CSS
+			stColor := config.Node[n].GetStatusColorCSS()
 			if config.Node[n].Status == ST_Success && config.Node[n].IsSynced {
 				isSyncedText = "已同步"
 			} else {
-				isSyncedText = "未同步"
+				if config.Node[n].Status == ST_Empty {
+					isSyncedText = "获取中"
+					stColor = ST_Running_CSS
+				} else {
+					isSyncedText = "未同步"
+				}
 			}
-			stColor = config.Node[n].GetStatusColorCSS()
+
 			//生成页面
 			htmlData += "<table>"
 			htmlData += "<colgroup><col class=\"media-column\"><col class=\"auto-column\"><col class=\"auto-column\"><col classe=\"auto-column\"><col classe=\"small-column\"></colgroup>"
@@ -84,7 +89,7 @@ func getNodeStatusTableHTML() string {
 			htmlData += "<span><b>　Node名称：</b>" + config.Node[n].Name + "</span>　<span><b>IP：</b>" + config.Node[n].IP + "</span><span><b>　版本：</b>" + config.Node[n].NodeVer + "</span>"
 			htmlData += fmt.Sprintf("　<span><b><span>Peers：</b>%d</span>", config.Node[n].Peers)
 			htmlData += fmt.Sprintf("　<span><b>Synced Layer：</b>%d</span>", config.Node[n].SLayer)
-			htmlData += fmt.Sprintf("　<span><b>Top Layer：</b>%d</span>", config.Node[n].TLayer)
+			htmlData += fmt.Sprintf("　<span><b>Top Layer：%d</b></span>", config.Node[n].TLayer)
 			htmlData += fmt.Sprintf("　<span><b>Verified Layer：</b>%d</span>", config.Node[n].VLayer)
 			htmlData += "</td></tr>"
 			htmlData += "<thead><tr><th>Name</th><th>ID</th><th>Eligibilities</th><th>State</th><th>Publish</th></tr></thead>"
@@ -107,7 +112,7 @@ func getNodeStatusTableHTML() string {
 								lt := (elg.Layer - config.Node[n].TLayer) * SM_LayerDuration
 								leftTime = utility.DurationToTimeFormat(time.Duration(lt) * time.Second)
 							}
-							elgMsg = fmt.Sprintf("<span class=\"%s\">【%s】</span>Epoch:%d,Layer:%d,Count:%d", bkColor, leftTime, elg.Epoch, elg.Layer, elg.Count)
+							elgMsg = fmt.Sprintf("<span class=\"%s\">【%s】</span>Layer:<b>%d</b>,Count:%d", bkColor, leftTime, elg.Layer, elg.Count)
 						}
 					}
 					pwpMsg := ""

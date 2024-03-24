@@ -50,10 +50,6 @@ span {
   background-color: aqua;
   color: black;
 }
-.st-running {
-  background-color: darkorange;
-  color: black;
-}
 @keyframes blink {
   0% {
     color: black;
@@ -68,6 +64,11 @@ span {
 .st-failed {
   background-color: darkred;
   color: lightgray;
+  animation: blink 2s infinite;
+}
+.st-running {
+  background-color: darkorange;
+  color: black;
   animation: blink 2s infinite;
 }
 .td-left {

@@ -1,7 +1,7 @@
 {
   "port": 8008,
   "refresh": 60,
-  "interval": 10,
+  "interval": 15,
   "timeout": 5,
   "reload": true,
   "node": [
