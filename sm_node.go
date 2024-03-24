@@ -14,19 +14,20 @@ import (
 )
 
 const (
-	ST_Empty         = ""
-	ST_Running       = "R"
-	ST_Failed        = "F"
-	ST_Success       = "S"
-	ST_Disabled      = "D"
-	ST_Alone         = "A"
-	ST_Empty_CSS     = "st-running"
-	ST_Failed_CSS    = "st-failed"
-	ST_Success_CSS   = "st-success"
-	ST_Disabled_CSS  = "st-disabled"
-	ST_Alone_CSS     = "st-alone"
-	ST_Running_CSS   = "st-running"
-	SM_LayerDuration = 300
+	ST_Empty            = ""
+	ST_Running          = "R"
+	ST_Failed           = "F"
+	ST_Success          = "S"
+	ST_Disabled         = "D"
+	ST_Alone            = "A"
+	ST_Empty_CSS        = "st-running"
+	ST_Failed_CSS       = "st-failed"
+	ST_Success_CSS      = "st-success"
+	ST_Disabled_CSS     = "st-disabled"
+	ST_Alone_CSS        = "st-alone"
+	ST_Running_CSS      = "st-running"
+	SM_LayerDuration    = 300
+	SM_GetNewVerAddress = "https://api.github.com/repos/spacemeshos/go-spacemesh/releases/latest"
 )
 
 type Node struct {
@@ -48,6 +49,7 @@ type Node struct {
 	VLayer              uint32
 	IsSynced            bool
 	Peers               uint64
+	HasNewVer           bool
 }
 
 // Node相关函数
@@ -128,6 +130,10 @@ func (x *Node) GetNodeStatus() {
 		return
 	}
 	x.NodeVer = resVer.VersionString.Value
+	latestVer := GetLatestVer()
+	if resVer.VersionString.Value != latestVer {
+		x.HasNewVer = true
+	}
 
 	// 获取NodeStatus
 	reqStatus := &pb.StatusRequest{}

@@ -61,8 +61,8 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 func getNodeStatusTableHTML() string {
 	//输出Node 状态表
 	config := GetConfig()
+	newVerMsg := false
 	//config.refreshNodeStatus()
-
 	htmlData := ""
 	for n := 0; n < len(config.Node); n++ {
 		if config.Node[n].Enable {
@@ -79,14 +79,19 @@ func getNodeStatusTableHTML() string {
 					isSyncedText = "未同步"
 				}
 			}
-
+			verColor := ""
+			if config.Node[n].HasNewVer {
+				verColor = ST_Failed_CSS
+				newVerMsg = true
+			}
 			//生成页面
 			htmlData += "<table>"
 			htmlData += "<colgroup><col class=\"media-column\"><col class=\"auto-column\"><col class=\"auto-column\"><col classe=\"auto-column\"><col classe=\"small-column\"></colgroup>"
 			htmlData += "<thead>"
 			htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"5\">"
 			htmlData += fmt.Sprintf("<span><b>状态：</b>"+"<span class=\"%s\">%s</span></span>", stColor, isSyncedText)
-			htmlData += "<span><b>　Node名称：</b>" + config.Node[n].Name + "</span>　<span><b>IP：</b>" + config.Node[n].IP + "</span><span><b>　版本：</b>" + config.Node[n].NodeVer + "</span>"
+			htmlData += "<span><b>　Node名称：</b>" + config.Node[n].Name + "</span>　<span><b>IP：</b>" + config.Node[n].IP + "</span><span><b>　版本：</b>"
+			htmlData += fmt.Sprintf("<span class=\"%s\">%s</span></span>", verColor, config.Node[n].NodeVer)
 			htmlData += fmt.Sprintf("　<span><b><span>Peers：</b>%d</span>", config.Node[n].Peers)
 			htmlData += fmt.Sprintf("　<span><b>Synced Layer：</b>%d</span>", config.Node[n].SLayer)
 			htmlData += fmt.Sprintf("　<span><b>Top Layer：%d</b></span>", config.Node[n].TLayer)
@@ -126,6 +131,9 @@ func getNodeStatusTableHTML() string {
 			htmlData += "</tbody>"
 			htmlData += "</table>"
 		}
+	}
+	if newVerMsg {
+		htmlData += fmt.Sprintf("<span class=\"st-failed\">Found new version <b>%s</b></span></br>", config.LatestVer)
 	}
 	currentTime := time.Now().Format("2006-01-02 15:04:05")
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"

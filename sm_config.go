@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 )
@@ -15,6 +16,7 @@ type SmConfig struct {
 	Timeout    time.Duration `json:"timeout"`
 	Reload     bool          `json:"reload"`
 	Node       []Node        `json:"node"`
+	LatestVer  string
 	Ready      bool
 	Updated    bool
 	UpdateTime time.Time
@@ -28,6 +30,10 @@ func GetTimeout() time.Duration {
 		return time.Duration(3)
 	}
 	return appConfig.Timeout
+}
+
+func GetLatestVer() string {
+	return appConfig.LatestVer
 }
 
 // 加载配置文件
@@ -74,6 +80,7 @@ func (x *SmConfig) refreshNodeStatus() {
 			return
 		}
 	}
+	x.getLatestNodeVersion()
 	//刷新SmesherIDs
 	for n := range x.Node {
 		x.Node[n].GetCurrentEpoch()
@@ -83,6 +90,27 @@ func (x *SmConfig) refreshNodeStatus() {
 	}
 	x.Updated = true
 	x.UpdateTime = time.Now()
+}
+
+// 从github获取node最新版本号
+func (x *SmConfig) getLatestNodeVersion() {
+	resp, err := http.Get(SM_GetNewVerAddress)
+	if err != nil {
+		log.Println("Ger new version failed: ", err)
+	}
+	defer resp.Body.Close()
+
+	type Release struct {
+		TagName string `json:"tag_name"`
+	}
+
+	var release Release
+	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
+		log.Println("Decode Json failed: ", err)
+	}
+	x.LatestVer = release.TagName
+
+	log.Println("Successfully get latest version tag ", release.TagName)
 }
 
 // json格式输出config
