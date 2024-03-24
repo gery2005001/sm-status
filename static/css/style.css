@@ -1,0 +1,85 @@
+table {
+  margin-top: 4px;
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 600px;
+  margin-bottom: 20px;
+  table-layout: fixed;
+}
+th,
+td {
+  border: 1px solid black;
+  padding: 2px 4px 2px 4px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+th {
+  background-color: #d9dedf;
+}
+span {
+  white-space: nowrap;
+}
+.st-column {
+  width: 30px;
+}
+.small-column {
+  width: 100px;
+  max-width: 200px;
+}
+.media-column {
+  width: 200px;
+  max-width: 400px;
+}
+.big-column {
+  width: 300px;
+  max-width: 500px;
+}
+.auto-column {
+  width: auto;
+}
+.st-success {
+  background-color: green;
+}
+.st-disabled {
+  background-color: black;
+  color: lightgray;
+}
+.st-alone {
+  background-color: aqua;
+  color: black;
+}
+.st-running {
+  background-color: darkorange;
+  color: black;
+}
+@keyframes blink {
+  0% {
+    color: black;
+  }
+  50% {
+    color: transparent;
+  }
+  100% {
+    opacity: black;
+  }
+}
+.st-failed {
+  background-color: darkred;
+  color: lightgray;
+  animation: blink 2s infinite;
+}
+.td-left {
+  text-align: left;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.td-rtl {
+  direction: rtl;
+}
+.node-info {
+  background-color: lightblue;
+}

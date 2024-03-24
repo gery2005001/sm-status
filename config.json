@@ -1,0 +1,190 @@
+{
+  "port": 8008,
+  "refresh": 60,
+  "interval": 10,
+  "timeout": 5,
+  "reload": true,
+  "node": [
+    {
+      "name": "JXS-2698v4",
+      "ip": "192.168.31.240",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": true,
+      "node-type": "multi",
+      "post": [
+        {
+          "enable": true,
+          "title": "664F2",
+          "capacity": "1.75TB",
+          "operator-address": "http://192.168.31.240:50050/status"
+        },
+        {
+          "enable": true,
+          "title": "9729A",
+          "capacity": "1.75TB",
+          "operator-address": "http://192.168.31.240:50051/status"
+        },
+        {
+          "enable": true,
+          "title": "C1A40",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50052/status"
+        },
+        {
+          "enable": true,
+          "title": "49134",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50053/status"
+        },
+        {
+          "enable": true,
+          "title": "D3620",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50054/status"
+        },
+        {
+          "enable": true,
+          "title": "01586",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50055/status"
+        }
+      ]
+    },
+    {
+      "name": "hn-2696v3x2",
+      "ip": "192.168.31.220",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": true,
+      "node-type": "multi",
+      "post": [
+        {
+          "enable": true,
+          "title": "67180",
+          "capacity": "0.89TB",
+          "operator-address": "http://192.168.31.220:50050/status"
+        },
+        {
+          "enable": true,
+          "title": "DE61F",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50051/status"
+        },
+        {
+          "enable": true,
+          "title": "32B97",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50052/status"
+        },
+        {
+          "enable": true,
+          "title": "9FB7C",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50053/status"
+        },
+        {
+          "enable": true,
+          "title": "22123",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50054/status"
+        },
+        {
+          "enable": true,
+          "title": "51765",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50055/status"
+        },
+        {
+          "enable": true,
+          "title": "66430",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50056/status"
+        },
+        {
+          "enable": true,
+          "title": "CCD09",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50057/status"
+        }
+      ]
+    },
+    {
+      "name": "JY-2696v3x2",
+      "ip": "192.168.31.230",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": true,
+      "node-type": "multi",
+      "post": [
+        {
+          "enable": true,
+          "title": "3B6D1",
+          "capacity": "1.75TB",
+          "operator-address": "http://192.168.31.230:50050/status"
+        },
+        {
+          "enable": true,
+          "title": "D4733",
+          "capacity": "1.75TB",
+          "operator-address": "http://192.168.31.230:50051/status"
+        },
+        {
+          "enable": true,
+          "title": "4120F",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.230:50052/status"
+        },
+        {
+          "enable": true,
+          "title": "A74AF",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.230:50053/status"
+        }
+      ]
+    },
+    {
+      "name": "Node-12100T",
+      "ip": "192.168.31.209",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": true,
+      "node-type": "smapp",
+      "post": [
+        {
+          "enable": true,
+          "title": "1DB1F",
+          "capacity": "3.50TB",
+          "operator-address": ""
+        }
+      ]
+    },
+    {
+      "name": "Node-New",
+      "ip": "127.0.0.1",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": true,
+      "node-type": "smapp",
+      "post": [
+        {
+          "type": "alone",
+          "enable": true,
+          "title": "new",
+          "capacity": "2.50TB",
+          "operator-address": ""
+        }
+      ]
+    }
+  ]
+}
