@@ -133,6 +133,8 @@ func (x *Node) GetNodeStatus() {
 	latestVer := GetLatestVer()
 	if resVer.VersionString.Value != latestVer {
 		x.HasNewVer = true
+	} else {
+		x.HasNewVer = false
 	}
 
 	// 获取NodeStatus

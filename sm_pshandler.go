@@ -101,7 +101,7 @@ func getPostStatusTableHTML() string {
 		}
 	}
 	htmlData += fmt.Sprintf("latest version: <b>%s</b></br>", config.LatestVer)
-	currentTime := time.Now().Format("2006-01-02 15:04:05")
+	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/node\">切换到Node State</a></br>"
 

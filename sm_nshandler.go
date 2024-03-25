@@ -84,7 +84,7 @@ func getNodeStatusTableHTML() string {
 			}
 			//生成页面
 			htmlData += "<table>"
-			htmlData += "<colgroup><col class=\"media-column\"><col class=\"auto-column\"><col class=\"auto-column\"><col classe=\"auto-column\"><col classe=\"small-column\"></colgroup>"
+			htmlData += "<colgroup><col class=\"media-column\"><col class=\"auto-column\"><col class=\"media-column\"><col classe=\"auto-column\"><col classe=\"small-column\"></colgroup>"
 			htmlData += "<thead>"
 			htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"5\">"
 			htmlData += fmt.Sprintf("<span><b>状态：</b>"+"<span class=\"%s\">%s</span></span>", stColor, isSyncedText)
@@ -125,14 +125,13 @@ func getNodeStatusTableHTML() string {
 					htmlData += fmt.Sprintf("<tr><td>%s</td><td class=\"td-rtl\">%x</td><td class=\"td-left\">%s</td><td class=\"td-left\">%s</td><td class=\"td-left\">%s</td><tr>", config.Node[n].PostInfo[i].Title, config.Node[n].PostInfo[i].SmesherId, elgMsg, config.Node[n].PostInfo[i].Status, pwpMsg)
 				}
 			}
-
 			htmlData += "</tbody>"
 			htmlData += "</table>"
 		}
 	}
 
 	htmlData += fmt.Sprintf("latest version: <b>%s</b></br>", config.LatestVer)
-	currentTime := time.Now().Format("2006-01-02 15:04:05")
+	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/post\">切换到Post State</a></br>"
 
