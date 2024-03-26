@@ -4,7 +4,7 @@ table {
   width: 100%;
   min-width: 600px;
   margin-bottom: 20px;
-  table-layout: fixed;
+  table-layout: auto;
 }
 th,
 td {
@@ -24,23 +24,11 @@ span {
 .st-column {
   width: 30px;
 }
-.small-column {
-  width: 100px;
-  max-width: 200px;
-}
-.media-column {
-  width: 200px;
-  max-width: 400px;
-}
-.big-column {
-  width: 300px;
-  max-width: 500px;
-}
 .auto-column {
   width: auto;
 }
 .st-success {
-  background-color: green;
+  background-color: #60a917;
 }
 .st-disabled {
   background-color: black;
@@ -67,7 +55,7 @@ span {
   animation: blink 2s infinite;
 }
 .st-running {
-  background-color: darkorange;
+  background-color: #e3b448;
   color: black;
   animation: blink 2s infinite;
 }
@@ -82,5 +70,69 @@ span {
   direction: rtl;
 }
 .node-info {
-  background-color: lightblue;
+  background-color: #75b5fd;
+}
+
+.btn-success {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #60a917; /* 背景颜色 */
+  color: #fff; /* 文字颜色 */
+  text-decoration: none;
+  border-radius: 4px; /* 圆角大小 */
+  transition: background-color 0.3s ease; /* 过渡效果 */
+  border: none; /* 去除边框 */
+  cursor: pointer; /* 鼠标样式 */
+}
+
+/* 按钮悬停状态 */
+.btn-success:hover {
+  background-color: #609917; /* 悬停时的背景颜色 */
+}
+
+.btn-running {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e3b448; /* 背景颜色 */
+  color: #fff; /* 文字颜色 */
+  text-decoration: none;
+  border-radius: 4px; /* 圆角大小 */
+  transition: background-color 0.3s ease; /* 过渡效果 */
+  border: none; /* 去除边框 */
+  cursor: pointer; /* 鼠标样式 */
+}
+
+/* 按钮悬停状态 */
+.btn-running:hover {
+  background-color: #e39448; /* 悬停时的背景颜色 */
+}
+
+.col-per-10 {
+  width: 10%;
+  min-width: 100px;
+  max-width: 150px;
+}
+
+.col-per-15 {
+  width: 15%;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.col-per-20 {
+  width: 20%;
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.col-per-30 {
+  width: 30%;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.col-per-40 {
+  width: 40%;
+  min-width: 400px;
+  max-width: 500px;
 }

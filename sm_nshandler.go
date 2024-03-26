@@ -69,13 +69,13 @@ func getNodeStatusTableHTML() string {
 			isSyncedText := ""
 			stColor := config.Node[n].GetStatusColorCSS()
 			if config.Node[n].Status == ST_Success && config.Node[n].IsSynced {
-				isSyncedText = "已同步"
+				isSyncedText = "【已同步】"
 			} else {
 				if config.Node[n].Status == ST_Empty {
-					isSyncedText = "获取中"
+					isSyncedText = "【获取中】"
 					stColor = ST_Running_CSS
 				} else {
-					isSyncedText = "未同步"
+					isSyncedText = "【未同步】"
 				}
 			}
 			verColor := ""
@@ -84,45 +84,57 @@ func getNodeStatusTableHTML() string {
 			}
 			//生成页面
 			htmlData += "<table>"
-			htmlData += "<colgroup><col class=\"media-column\"><col class=\"auto-column\"><col class=\"media-column\"><col classe=\"auto-column\"><col classe=\"small-column\"></colgroup>"
+			htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
 			htmlData += "<thead>"
 			htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"5\">"
-			htmlData += fmt.Sprintf("<span><b>状态：</b>"+"<span class=\"%s\">%s</span></span>", stColor, isSyncedText)
-			htmlData += "<span><b>　Node名称：</b>" + config.Node[n].Name + "</span>　<span><b>IP：</b>" + config.Node[n].IP + "</span><span><b>　版本：</b>"
-			htmlData += fmt.Sprintf("<span class=\"%s\">%s</span></span>", verColor, config.Node[n].NodeVer)
-			htmlData += fmt.Sprintf("　<span><b><span>Peers：</b>%d</span>", config.Node[n].Peers)
-			htmlData += fmt.Sprintf("　<span><b>Synced Layer：</b>%d</span>", config.Node[n].SLayer)
-			htmlData += fmt.Sprintf("　<span><b>Top Layer：%d</b></span>", config.Node[n].TLayer)
-			htmlData += fmt.Sprintf("　<span><b>Verified Layer：</b>%d</span>", config.Node[n].VLayer)
+			htmlData += fmt.Sprintf("<span>状态：<b>"+"<span class=\"%s\">%s</span></b></span>", stColor, isSyncedText)
+			htmlData += "<span>　Node名称：<b>" + config.Node[n].Name + "</b></span>　<span>IP：<b>" + config.Node[n].IP + "</b></span>"
+			htmlData += fmt.Sprintf("<span>　版本：<span class=\"%s\"><b>%s</b></span></span>", verColor, config.Node[n].NodeVer)
+			htmlData += fmt.Sprintf("　<span><span>Peers：<b>%d</b></span>", config.Node[n].Peers)
+			htmlData += fmt.Sprintf("　<span>Synced Layer：<b>%d</b></span>", config.Node[n].SLayer)
+			htmlData += fmt.Sprintf("　<span>Top Layer：<b>%d</b></span>", config.Node[n].TLayer)
+			htmlData += fmt.Sprintf("　<span>Verified Layer：<b>%d</b></span>", config.Node[n].VLayer)
 			htmlData += "</td></tr>"
-			htmlData += "<thead><tr><th>Name</th><th>ID</th><th>Eligibilities</th><th>State</th><th>Publish</th></tr></thead>"
+			htmlData += "<thead><tr><th>KEY</th><th>State</th><th>Eligibilities</th><th>Publish</th><th>ID</th></tr></thead>"
 			htmlData += "<tbody>"
 			if config.Node[n].PostInfo != nil {
 				for i := 0; i < len(config.Node[n].PostInfo); i++ {
 					elgMsg := ""
+					elgBn := ""
+					elgEnd := "✓"
 					leftTime := ""
-					bkColor := ""
+					elgBtnStyle := "btn-running"
 					for _, elg := range config.Node[n].PostInfo[i].Eligs {
 						if elg.Epoch >= config.Node[n].Epoch {
 							if elg.Layer == config.Node[n].TLayer {
-								leftTime = "now"
-								bkColor = ST_Running_CSS
+								elgBtnStyle = "btn-running"
+								elgEnd = "【now】"
 							} else if elg.Layer < config.Node[n].TLayer {
 								lt := (config.Node[n].TLayer - elg.Layer) * SM_LayerDuration
-								bkColor = ST_Success_CSS
+								elgBtnStyle = "btn-success"
 								leftTime = "-" + utility.DurationToTimeFormat(time.Duration(lt)*time.Second)
+								elgEnd = "【✓】"
 							} else {
 								lt := (elg.Layer - config.Node[n].TLayer) * SM_LayerDuration
 								leftTime = utility.DurationToTimeFormat(time.Duration(lt) * time.Second)
+								elgEnd = fmt.Sprintf("%s【%d】", leftTime, elg.Count)
 							}
-							elgMsg = fmt.Sprintf("<span class=\"%s\">【%s】</span>Layer:<b>%d</b>,Count:%d", bkColor, leftTime, elg.Layer, elg.Count)
+							//elgMsg = fmt.Sprintf("<span class=\"%s\">【%s】</span>Layer:<b>%d</b>,Count:%d", bkColor, leftTime, elg.Layer, elg.Count)
+							elgMsg = fmt.Sprintf("【%s】Epoch:【%d】,Layer:【%d】,Count:【%d】", leftTime, elg.Epoch, elg.Layer, elg.Count)
+							elgBn = fmt.Sprintf("<button class=\"%s\" onclick=\"alert('%s')\">%s</button>", elgBtnStyle, elgMsg, elgEnd)
+						} else {
+							elgBn = ""
 						}
 					}
 					pwpMsg := ""
+					pwpBn := ""
 					if config.Node[n].PostInfo[i].Publish.Publish >= config.Node[n].Epoch {
-						pwpMsg = fmt.Sprintf("Publish:%d,Target:%d", config.Node[n].PostInfo[i].Publish.Publish, config.Node[n].PostInfo[i].Publish.Target)
+						pwpMsg = fmt.Sprintf("Publish:【%d】,Target:【%d】", config.Node[n].PostInfo[i].Publish.Publish, config.Node[n].PostInfo[i].Publish.Target)
+						pwpBn = fmt.Sprintf("<button class=\"btn-success\" onclick=\"alert('%s')\">【%d】</button>", pwpMsg, config.Node[n].PostInfo[i].Publish.Target)
+					} else {
+						pwpBn = ""
 					}
-					htmlData += fmt.Sprintf("<tr><td>%s</td><td class=\"td-rtl\">%x</td><td class=\"td-left\">%s</td><td class=\"td-left\">%s</td><td class=\"td-left\">%s</td><tr>", config.Node[n].PostInfo[i].Title, config.Node[n].PostInfo[i].SmesherId, elgMsg, config.Node[n].PostInfo[i].Status, pwpMsg)
+					htmlData += fmt.Sprintf("<tr><td>%s</td><td  class=\"td-left\">%s</td><td>%s</td><td>%s</td><td class=\"td-rtl\">%x</td><tr>", config.Node[n].PostInfo[i].Title, config.Node[n].PostInfo[i].Status, elgBn, pwpBn, config.Node[n].PostInfo[i].SmesherId)
 				}
 			}
 			htmlData += "</tbody>"

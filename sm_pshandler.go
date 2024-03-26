@@ -68,25 +68,35 @@ func getPostStatusTableHTML() string {
 		if node.Enable {
 			//获取node状态
 			isSyncedText := ""
-			stColor := ST_Failed_CSS
-			if node.Status == ST_Success && node.IsSynced {
-				isSyncedText = "已同步"
+			stColor := config.Node[n].GetStatusColorCSS()
+			if config.Node[n].Status == ST_Success && config.Node[n].IsSynced {
+				isSyncedText = "【已同步】"
 			} else {
-				isSyncedText = "未同步"
+				if config.Node[n].Status == ST_Empty {
+					isSyncedText = "【获取中】"
+					stColor = ST_Running_CSS
+				} else {
+					isSyncedText = "【未同步】"
+				}
 			}
-			stColor = config.Node[n].GetStatusColorCSS()
+			verColor := ""
+			if config.Node[n].HasNewVer {
+				verColor = ST_Failed_CSS
+			}
 			//生成页面
 			htmlData += "<table>"
-			htmlData += "<colgroup><col class=\"st-column\"><col class=\"media-column\"><col class=\"small-column\"><col classe=\"auto-column\"><col classe=\"auto-column\"></colgroup>"
+			htmlData += "<colgroup><col class=\"st-column\"><col class=\"col-per-15\"><col class=\"col-per-10\"><col classe=\"auto-column\"><col classe=\"auto-column\"></colgroup>"
 			htmlData += "<thead>"
 			htmlData += "<tr><td class=\"td-left node-info\" colspan=\"5\">"
-			htmlData += fmt.Sprintf("<span><b>状态：</b>"+"<span class=\"%s\">%s</span></span>", stColor, isSyncedText)
-			htmlData += "<span><b>　Node名称：</b>" + node.Name + "</span>　<span><b>IP：</b>" + node.IP + "</span>　<span><b>版本：</b>" + config.Node[n].NodeVer + "</span>"
-			htmlData += fmt.Sprintf("　<span><b><span>Peers：</b>%d</span>", config.Node[n].Peers)
-			htmlData += fmt.Sprintf("　<span><b>Synced Layer：</b>%d</span>", config.Node[n].SLayer)
-			htmlData += fmt.Sprintf("　<span><b>Top Layer：</b>%d</span>", config.Node[n].TLayer)
-			htmlData += fmt.Sprintf("　<span><b>Verified Layer：</b>%d</span>", config.Node[n].VLayer)
+			htmlData += fmt.Sprintf("<span>状态：<b>"+"<span class=\"%s\">%s</span></b></span>", stColor, isSyncedText)
+			htmlData += "<span>　Node名称：<b>" + config.Node[n].Name + "</b></span>　<span>IP：<b>" + config.Node[n].IP + "</b></span>"
+			htmlData += fmt.Sprintf("<span>　版本：<span class=\"%s\"><b>%s</b></span></span>", verColor, config.Node[n].NodeVer)
+			htmlData += fmt.Sprintf("　<span><span>Peers：<b>%d</b></span>", config.Node[n].Peers)
+			htmlData += fmt.Sprintf("　<span>Synced Layer：<b>%d</b></span>", config.Node[n].SLayer)
+			htmlData += fmt.Sprintf("　<span>Top Layer：<b>%d</b></span>", config.Node[n].TLayer)
+			htmlData += fmt.Sprintf("　<span>Verified Layer：<b>%d</b></span>", config.Node[n].VLayer)
 			htmlData += "</td></tr>"
+			htmlData += "</thead>"
 			htmlData += "<thead><tr><th>ST</th><th>名称</th><th>容量</th><th>Operator</th><th>OperatorAddress</th></tr></thead>"
 
 			if len(node.Post) > 0 {
