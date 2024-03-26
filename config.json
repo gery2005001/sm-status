@@ -169,7 +169,7 @@
     },
     {
       "name": "Node-New",
-      "ip": "127.0.0.1",
+      "ip": "192.168.31.201",
       "grpc-public-listener": 9092,
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
