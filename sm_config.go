@@ -63,33 +63,29 @@ func GetConfig() *SmConfig {
 	return &appConfig
 }
 
-// 刷新Post Operator
-func (x *SmConfig) refreshOperatorStatus() {
-	//刷新SmesherIDs
-	for n := range x.Node {
-		x.Node[n].GetPostOperatorStatus()
-	}
-}
-
 // 刷新node status
 func (x *SmConfig) refreshNodeStatus() {
 	if x.Updated {
 		currTime := time.Now()
 		if currTime.Sub(x.UpdateTime) < time.Duration(300) {
-			log.Println("skip network status update")
+			log.Println("Skip status update...")
 			return
 		}
 	}
+	//获取最新的客户端版本
 	x.getLatestNodeVersion()
-	//刷新SmesherIDs
+	//刷新每个Node的Post和Operator状态
 	for n := range x.Node {
 		x.Node[n].GetCurrentEpoch()
 		x.Node[n].GetNodeStatus()
 		x.Node[n].getPostInfoFromGRPC()
 		x.Node[n].getEventsStreams()
+		x.Node[n].getNodePostOperatorStatus()
 	}
+
 	x.Updated = true
 	x.UpdateTime = time.Now()
+
 }
 
 // 从github获取node最新版本号
@@ -112,13 +108,3 @@ func (x *SmConfig) getLatestNodeVersion() {
 
 	log.Println("Successfully get latest version tag ", release.TagName)
 }
-
-// json格式输出config
-// func (x *SmConfig) toJSONString() string {
-// 	jsonData, err := json.MarshalIndent(x, " ", " ")
-// 	if err != nil {
-// 		return ""
-// 	}
-
-// 	return string(jsonData)
-// }

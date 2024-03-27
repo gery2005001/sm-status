@@ -37,7 +37,6 @@ func main() {
 		}
 	}
 
-	go appConfig.refreshOperatorStatus()
 	go appConfig.refreshNodeStatus()
 
 	// 定时刷新Node和Post状态
@@ -45,7 +44,6 @@ func main() {
 	defer ticker.Stop()
 	go func() {
 		for range ticker.C {
-			appConfig.refreshOperatorStatus()
 			appConfig.refreshNodeStatus()
 		}
 	}()

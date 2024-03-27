@@ -14,12 +14,12 @@ import (
 )
 
 const (
-	ST_Empty            = ""
-	ST_Running          = "R"
-	ST_Failed           = "F"
-	ST_Success          = "S"
-	ST_Disabled         = "D"
-	ST_Alone            = "A"
+	ST_Empty            = ""  //未初始化
+	ST_Running          = "R" //运行中未同步
+	ST_Failed           = "F" //通讯失败，未开机
+	ST_Success          = "S" //开机并同步
+	ST_Disabled         = "D" //配置未开启
+	ST_Alone            = "A" //单机节点
 	ST_Empty_CSS        = "st-running"
 	ST_Failed_CSS       = "st-failed"
 	ST_Success_CSS      = "st-success"
@@ -126,6 +126,7 @@ func (x *Node) GetNodeStatus() {
 	reqVer := &emptypb.Empty{}
 	resVer, err := client.Version(ctx, reqVer)
 	if err != nil {
+		log.Println("Get node version failed: ", err)
 		x.Status = ST_Failed
 		return
 	}
@@ -164,14 +165,29 @@ func (x *Node) GetNodeStatus() {
 }
 
 // 获取Node所有Post的OperatorStatus
-func (x *Node) GetPostOperatorStatus() {
+func (x *Node) getNodePostOperatorStatus() {
+	if x.Status == ST_Failed {
+		log.Println("Node status is failed skip get Operator status")
+		for i := 0; i < len(x.Post); i++ {
+			x.Post[i].Status = ST_Failed
+		}
+		return
+	}
 	for i := 0; i < len(x.Post); i++ {
-		x.Post[i].GetOperatorAddressStatus()
+		x.Post[i].getPostOperatorStatus()
 	}
 }
 
 // 从Node的GRPC服务中获取Events
 func (x *Node) getEventsStreams() {
+	if x.Status == ST_Failed {
+		log.Println("Node status is failed skip get events stream")
+		return
+	}
+	if x.NodeType == "smapp" {
+		log.Println("Node is smapp skip get events stream")
+		return
+	}
 	timeout := GetTimeout()
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 
@@ -249,8 +265,12 @@ func (x *Node) getEventsStreams() {
 
 // // 从Node的PostInfoService中获取PostInfo
 func (x *Node) getPostInfoFromGRPC() {
+	x.PostInfo = []Post{}
+	if x.Status == ST_Failed {
+		log.Println("Node status is failed skip get posts information")
+		return
+	}
 	if x.NodeType != "multi" {
-		x.PostInfo = nil
 		alonePost := Post{
 			Title:  x.Name,
 			Status: x.NodeType,
@@ -287,7 +307,6 @@ func (x *Node) getPostInfoFromGRPC() {
 		return
 	}
 	if len(response.States) > 0 {
-		x.PostInfo = []Post{}
 		for i := 0; i < len(response.States); i++ {
 			x.PostInfo = append(x.PostInfo, Post{
 				SmesherId: response.States[i].Id,

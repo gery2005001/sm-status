@@ -146,6 +146,18 @@
           "title": "A74AF",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.230:50053/status"
+        },
+        {
+          "enable": true,
+          "title": "AB4AA",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.230:50054/status"
+        },
+        {
+          "enable": true,
+          "title": "276AF",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.230:50055/status"
         }
       ]
     },
@@ -178,7 +190,7 @@
       "node-type": "smapp",
       "post": [
         {
-          "type": "alone",
+          "type": "smapp",
           "enable": true,
           "title": "new",
           "capacity": "2.50TB",

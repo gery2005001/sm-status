@@ -34,7 +34,7 @@ type SmEligs struct {
 }
 
 // Post相关函数
-func (x *Post) GetOperatorAddressStatus() {
+func (x *Post) getPostOperatorStatus() {
 	if !x.Enable {
 		x.Status = ST_Disabled
 		x.OaStatus = "Post disabled"
