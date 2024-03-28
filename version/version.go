@@ -16,3 +16,7 @@ var (
 func PrintCLIVersion() string {
 	return fmt.Sprintf("Version: %s, build on %s %s, %s", Version, BuildDate, BuildTime, GO_Version)
 }
+
+func PrintCLIVersionNumber() string {
+	return Version
+}

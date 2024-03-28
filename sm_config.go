@@ -41,20 +41,19 @@ func LoadConfig() error {
 	// 打开 config 文件
 	file, err := os.Open(configFile)
 	if err != nil {
-		fmt.Println("Load config failed: ", err)
+		fmt.Println("load config file failed.")
 		return err
 	}
 	defer file.Close()
 
 	if err := json.NewDecoder(file).Decode(&appConfig); err != nil {
-		fmt.Println("Parse config failed: ", err)
+		fmt.Println("parse config failed.")
 		return err
 	}
 
 	appConfig.Ready = true
 
-	log.Println("Load config successfully")
-
+	log.Println("load config successfully")
 	return nil
 }
 
@@ -67,32 +66,29 @@ func GetConfig() *SmConfig {
 func (x *SmConfig) refreshNodeStatus() {
 	if x.Updated {
 		currTime := time.Now()
-		if currTime.Sub(x.UpdateTime) < time.Duration(300) {
-			log.Println("Skip status update...")
+		if currTime.Sub(x.UpdateTime) < time.Duration(SM_LayerDuration) {
+			log.Println("skip status update...")
 			return
 		}
 	}
+
 	//获取最新的客户端版本
 	x.getLatestNodeVersion()
 	//刷新每个Node的Post和Operator状态
 	for n := range x.Node {
-		x.Node[n].GetCurrentEpoch()
-		x.Node[n].GetNodeStatus()
-		x.Node[n].getPostInfoFromGRPC()
-		x.Node[n].getEventsStreams()
+		x.Node[n].GetAllInformation()
 		x.Node[n].getNodePostOperatorStatus()
 	}
 
 	x.Updated = true
 	x.UpdateTime = time.Now()
-
 }
 
 // 从github获取node最新版本号
 func (x *SmConfig) getLatestNodeVersion() {
 	resp, err := http.Get(SM_GetNewVerAddress)
 	if err != nil {
-		log.Println("Ger new version failed: ", err)
+		log.Println("get new version failed: ", err)
 	}
 	defer resp.Body.Close()
 
@@ -102,9 +98,9 @@ func (x *SmConfig) getLatestNodeVersion() {
 
 	var release Release
 	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
-		log.Println("Decode Json failed: ", err)
+		log.Println("decode Json failed: ", err)
 	}
 	x.LatestVer = release.TagName
 
-	log.Println("Successfully get latest version tag ", release.TagName)
+	log.Println("successfully get latest version tag ", release.TagName)
 }

@@ -34,15 +34,17 @@ type SmEligs struct {
 }
 
 // Post相关函数
-func (x *Post) getPostOperatorStatus() {
+func (x *Post) getPostOperator() {
 	if !x.Enable {
 		x.Status = ST_Disabled
 		x.OaStatus = "Post disabled"
+		log.Println("post is disabled.")
 		return
 	}
 	if x.OperatorAddress == "" {
 		x.Status = ST_Alone
-		x.OaStatus = "No operator-address"
+		x.OaStatus = "No operator address"
+		log.Println("no set operator address.")
 		return
 	}
 	// 创建一个带有超时设置的 HTTP 客户端
@@ -56,11 +58,11 @@ func (x *Post) getPostOperatorStatus() {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
 	defer cancel() // 一定要确保取消上下文
 
-	log.Println("Get status from: ", x.OperatorAddress)
+	log.Println("get status from: ", x.OperatorAddress)
 	// 发送带有上下文的 HTTP 请求
 	req, err := http.NewRequestWithContext(ctx, "GET", x.OperatorAddress, nil)
 	if err != nil {
-		log.Println("HTTP request failed:", err)
+		log.Println("request operator failed:", err)
 		x.Status = ST_Failed
 		x.OaStatus = err.Error()
 		return
@@ -69,7 +71,7 @@ func (x *Post) getPostOperatorStatus() {
 	// 发送 HTTP 请求
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("Error:", err)
+		log.Println("request operator failed:", err)
 		x.Status = ST_Failed
 		x.OaStatus = err.Error()
 		return
@@ -78,7 +80,7 @@ func (x *Post) getPostOperatorStatus() {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("Read body failed:", err)
+		log.Println("operator read body failed:", err)
 		x.Status = ST_Failed
 		x.OaStatus = err.Error()
 		return
@@ -87,11 +89,13 @@ func (x *Post) getPostOperatorStatus() {
 	x.Status = ST_Success
 	x.OaStatus = string(body)
 
-	log.Println("Status:", x.Status, "Operator:", x.OaStatus)
+	log.Println("successfully get operator: ", x.OaStatus)
 }
 
 func (x *Post) GetStatusColorCSS() string {
 	switch x.Status {
+	case ST_Empty:
+		return ST_Empty_CSS
 	case ST_Alone:
 		return ST_Alone_CSS
 	case ST_Disabled:

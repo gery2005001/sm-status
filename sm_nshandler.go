@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sm-status/utility"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -61,85 +60,21 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 func getNodeStatusTableHTML() string {
 	//输出Node 状态表
 	config := GetConfig()
-	//config.refreshNodeStatus()
+
+	// for _, nd := range config.Node {
+	// 	for _, pi := range nd.PostInfo {
+	// 		jd, err := json.MarshalIndent(pi, " ", " ")
+	// 		if err == nil {
+	// 			log.Printf("%s", string(jd))
+	// 		} else {
+	// 			log.Println("marshal post info to json error ", err)
+	// 		}
+	// 	}
+	// }
+
 	htmlData := ""
 	for n := 0; n < len(config.Node); n++ {
-		if config.Node[n].Enable {
-			//获取node状态
-			isSyncedText := ""
-			stColor := config.Node[n].GetStatusColorCSS()
-			if config.Node[n].Status == ST_Success && config.Node[n].IsSynced {
-				isSyncedText = "【已同步】"
-			} else {
-				if config.Node[n].Status == ST_Empty {
-					isSyncedText = "【获取中】"
-					stColor = ST_Running_CSS
-				} else {
-					isSyncedText = "【未同步】"
-				}
-			}
-			verColor := ""
-			if config.Node[n].HasNewVer {
-				verColor = ST_Failed_CSS
-			}
-			//生成页面
-			htmlData += "<table>"
-			htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
-			htmlData += "<thead>"
-			htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"5\">"
-			htmlData += fmt.Sprintf("<span>状态：<b>"+"<span class=\"%s\">%s</span></b></span>", stColor, isSyncedText)
-			htmlData += "<span>　Node名称：<b>" + config.Node[n].Name + "</b></span>　<span>IP：<b>" + config.Node[n].IP + "</b></span>"
-			htmlData += fmt.Sprintf("<span>　版本：<span class=\"%s\"><b>%s</b></span></span>", verColor, config.Node[n].NodeVer)
-			htmlData += fmt.Sprintf("　<span><span>Peers：<b>%d</b></span>", config.Node[n].Peers)
-			htmlData += fmt.Sprintf("　<span>Synced Layer：<b>%d</b></span>", config.Node[n].SLayer)
-			htmlData += fmt.Sprintf("　<span>Top Layer：<b>%d</b></span>", config.Node[n].TLayer)
-			htmlData += fmt.Sprintf("　<span>Verified Layer：<b>%d</b></span>", config.Node[n].VLayer)
-			htmlData += "</td></tr>"
-			htmlData += "<thead><tr><th>KEY</th><th>State</th><th>Eligibilities</th><th>Publish</th><th>ID</th></tr></thead>"
-			htmlData += "<tbody>"
-			if config.Node[n].PostInfo != nil {
-				for i := 0; i < len(config.Node[n].PostInfo); i++ {
-					elgMsg := ""
-					elgBn := ""
-					elgEnd := "✓"
-					leftTime := ""
-					elgBtnStyle := "btn-running"
-					for _, elg := range config.Node[n].PostInfo[i].Eligs {
-						if elg.Epoch >= config.Node[n].Epoch {
-							if elg.Layer == config.Node[n].TLayer {
-								elgBtnStyle = "btn-running"
-								elgEnd = "【now】"
-							} else if elg.Layer < config.Node[n].TLayer {
-								lt := (config.Node[n].TLayer - elg.Layer) * SM_LayerDuration
-								elgBtnStyle = "btn-success"
-								leftTime = "-" + utility.DurationToTimeFormat(time.Duration(lt)*time.Second)
-								elgEnd = "【✓】"
-							} else {
-								lt := (elg.Layer - config.Node[n].TLayer) * SM_LayerDuration
-								leftTime = utility.DurationToTimeFormat(time.Duration(lt) * time.Second)
-								elgEnd = fmt.Sprintf("%s【%d】", leftTime, elg.Count)
-							}
-							//elgMsg = fmt.Sprintf("<span class=\"%s\">【%s】</span>Layer:<b>%d</b>,Count:%d", bkColor, leftTime, elg.Layer, elg.Count)
-							elgMsg = fmt.Sprintf("【%s】Epoch:【%d】,Layer:【%d】,Count:【%d】", leftTime, elg.Epoch, elg.Layer, elg.Count)
-							elgBn = fmt.Sprintf("<button class=\"%s\" onclick=\"alert('%s')\">%s</button>", elgBtnStyle, elgMsg, elgEnd)
-						} else {
-							elgBn = ""
-						}
-					}
-					pwpMsg := ""
-					pwpBn := ""
-					if config.Node[n].PostInfo[i].Publish.Publish >= config.Node[n].Epoch {
-						pwpMsg = fmt.Sprintf("Publish:【%d】,Target:【%d】", config.Node[n].PostInfo[i].Publish.Publish, config.Node[n].PostInfo[i].Publish.Target)
-						pwpBn = fmt.Sprintf("<button class=\"btn-success\" onclick=\"alert('%s')\">【%d】</button>", pwpMsg, config.Node[n].PostInfo[i].Publish.Target)
-					} else {
-						pwpBn = ""
-					}
-					htmlData += fmt.Sprintf("<tr><td>%s</td><td  class=\"td-left\">%s</td><td>%s</td><td>%s</td><td class=\"td-rtl\">%x</td><tr>", config.Node[n].PostInfo[i].Title, config.Node[n].PostInfo[i].Status, elgBn, pwpBn, config.Node[n].PostInfo[i].SmesherId)
-				}
-			}
-			htmlData += "</tbody>"
-			htmlData += "</table>"
-		}
+		htmlData += config.Node[n].GetNodeStatusTableHTMLString()
 	}
 
 	htmlData += fmt.Sprintf("latest version: <b>%s</b></br>", config.LatestVer)
@@ -147,6 +82,5 @@ func getNodeStatusTableHTML() string {
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/post\">切换到Post State</a></br>"
 
-	//log.Println(htmlData)
 	return htmlData
 }

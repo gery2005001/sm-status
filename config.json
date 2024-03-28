@@ -3,7 +3,7 @@
   "refresh": 90,
   "interval": 15,
   "timeout": 5,
-  "reload": true,
+  "reload": false,
   "node": [
     {
       "name": "JXS-2698v4",
@@ -12,7 +12,7 @@
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": true,
+      "enable": false,
       "node-type": "multi",
       "post": [
         {
@@ -60,7 +60,7 @@
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": true,
+      "enable": false,
       "node-type": "multi",
       "post": [
         {
@@ -186,7 +186,7 @@
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": true,
+      "enable": false,
       "node-type": "smapp",
       "post": [
         {
