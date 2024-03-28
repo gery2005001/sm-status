@@ -12,7 +12,7 @@
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": false,
+      "enable": true,
       "node-type": "multi",
       "post": [
         {
@@ -60,7 +60,7 @@
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": false,
+      "enable": true,
       "node-type": "multi",
       "post": [
         {
