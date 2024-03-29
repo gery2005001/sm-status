@@ -103,6 +103,7 @@ func (x *Node) setNodeToFailedStatus() {
 	x.VLayer = 0
 	x.Peers = 0
 	x.IsSynced = false
+	x.PostInfo = []Post{}
 }
 
 // 从node获取当前Epoch，用以判断node是否开启
