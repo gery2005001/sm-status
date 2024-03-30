@@ -103,6 +103,7 @@ func (x *Node) setNodeToFailedStatus() {
 	x.VLayer = 0
 	x.Peers = 0
 	x.IsSynced = false
+	x.NodeVer = ""
 	x.PostInfo = []Post{}
 }
 
@@ -140,6 +141,7 @@ func (x *Node) getCurrentEpoch() error {
 	}
 	x.Epoch = resEpoch.Epochnum.Number
 
+	x.Status = ST_Running
 	log.Println("successfully get node current epoch from ", grpcAddr)
 	return nil
 }
@@ -350,11 +352,10 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	} else {
 		if x.Status == ST_Empty {
 			nodeSyncedText = "【获取中】"
-			nodeSTColor = ST_Running_CSS
 		} else {
 			nodeSyncedText = "【未同步】"
-			nodeSTColor = ST_Failed_CSS
 		}
+		nodeSTColor = x.GetStatusColorCSS()
 	}
 	verSTColor := ""
 	if x.HasNewVer {
