@@ -3,7 +3,7 @@
   "refresh": 90,
   "interval": 15,
   "timeout": 5,
-  "reload": false,
+  "reload": true,
   "node": [
     {
       "name": "JXS-2698v4",
@@ -181,16 +181,16 @@
     },
     {
       "name": "Node-New",
-      "ip": "192.168.31.201",
+      "ip": "192.168.31.231",
       "grpc-public-listener": 9092,
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": false,
-      "node-type": "smapp",
+      "enable": true,
+      "node-type": "alone",
       "post": [
         {
-          "type": "smapp",
+          "type": "alone",
           "enable": true,
           "title": "new",
           "capacity": "2.50TB",

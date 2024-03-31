@@ -52,6 +52,10 @@ func main() {
 		defer ticker.Stop()
 		go func() {
 			for range ticker.C {
+				//更新Config文件
+				if appConfig.Reload {
+					_ = LoadConfig()
+				}
 				appConfig.refreshNodeStatus()
 			}
 		}()
