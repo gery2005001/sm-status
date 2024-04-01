@@ -373,6 +373,7 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	htmlData += fmt.Sprintf("　<span>Synced Layer：<b>%d</b></span>", x.SLayer)
 	htmlData += fmt.Sprintf("　<span>Top Layer：<b>%d</b></span>", x.TLayer)
 	htmlData += fmt.Sprintf("　<span>Verified Layer：<b>%d</b></span>", x.VLayer)
+	htmlData += fmt.Sprintf("　<span>Epoch：<b>%d</b></span>", x.Epoch)
 	htmlData += "</td></tr>"
 	if x.PostInfo != nil {
 		htmlData += "<thead><tr><th>KEY</th><th>State</th><th>Eligibilities</th><th>Publish</th><th>ID</th></tr></thead>"

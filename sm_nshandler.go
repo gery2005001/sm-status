@@ -61,17 +61,6 @@ func getNodeStatusTableHTML() string {
 	//输出Node 状态表
 	config := GetConfig()
 
-	// for _, nd := range config.Node {
-	// 	for _, pi := range nd.PostInfo {
-	// 		jd, err := json.MarshalIndent(pi, " ", " ")
-	// 		if err == nil {
-	// 			log.Printf("%s", string(jd))
-	// 		} else {
-	// 			log.Println("marshal post info to json error ", err)
-	// 		}
-	// 	}
-	// }
-
 	htmlData := ""
 	for n := 0; n < len(config.Node); n++ {
 		htmlData += config.Node[n].GetNodeStatusTableHTMLString()
