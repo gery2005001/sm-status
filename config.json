@@ -1,6 +1,6 @@
 {
   "port": 8008,
-  "refresh": 90,
+  "refresh": 120,
   "interval": 15,
   "timeout": 5,
   "reload": true,

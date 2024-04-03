@@ -73,7 +73,7 @@ func (x *Node) GetStatusColorCSS() string {
 }
 
 // 获取Node所有信息
-func (x *Node) GetAllInformation() {
+func (x *Node) GetAllNodeInformation() {
 	//从node获取当前Epoch
 	if err := x.getCurrentEpoch(); err != nil {
 		x.setNodeToFailedStatus()
@@ -119,6 +119,15 @@ func (x *Node) setNodeToFailedStatus() {
 	x.IsSynced = false
 	x.NodeVer = ""
 	x.PostInfo = []Post{}
+}
+
+// 设置node为不能访问private端口的节点,条件是可以访问node status
+func (x *Node) setAnPrivateNode() {
+	alonePost := Post{
+		Title:  x.Name,
+		Status: x.NodeType,
+	}
+	x.PostInfo = append(x.PostInfo, alonePost)
 }
 
 // 从node获取当前Epoch，用以判断node是否开启
@@ -223,11 +232,7 @@ func (x *Node) getNodeVerAndStatus() error {
 func (x *Node) getNodePostPublicKeys() error {
 	x.PostInfo = []Post{}
 	if x.NodeType != "multi" && x.NodeType != "alone" {
-		alonePost := Post{
-			Title:  x.Name,
-			Status: x.NodeType,
-		}
-		x.PostInfo = append(x.PostInfo, alonePost)
+		x.setAnPrivateNode()
 		return nil
 	}
 	timeout := GetTimeout()
@@ -236,6 +241,7 @@ func (x *Node) getNodePostPublicKeys() error {
 	log.Println("starting get Post Info from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
 	if err != nil {
+		x.setAnPrivateNode()
 		return err
 	}
 	defer conn.Close()
@@ -254,6 +260,7 @@ func (x *Node) getNodePostPublicKeys() error {
 	// 调用 gRPC 服务
 	response, err := client.SmesherIDs(ctx, request)
 	if err != nil {
+		x.setAnPrivateNode()
 		return err
 	}
 

@@ -22,12 +22,17 @@ type SmConfig struct {
 	UpdateTime time.Time
 }
 
+const MIN_TIMEOUT = 3
+const MAX_TIMEOUT = 30
+const MIN_REFRESH_TIME = 15
+const MAX_REFRESH_TIME = 600
+
 var appConfig SmConfig = SmConfig{}
 var configFile string = "config.json"
 
 func GetTimeout() time.Duration {
-	if appConfig.Timeout < time.Duration(3) || appConfig.Timeout > time.Duration(180) {
-		return time.Duration(3)
+	if appConfig.Timeout < time.Duration(MIN_TIMEOUT) || appConfig.Timeout > time.Duration(MAX_TIMEOUT) {
+		return time.Duration(MIN_TIMEOUT)
 	}
 	return appConfig.Timeout
 }
@@ -51,6 +56,10 @@ func LoadConfig() error {
 		return err
 	}
 
+	if appConfig.Refresh < time.Duration(MIN_REFRESH_TIME) || appConfig.Timeout > time.Duration(MAX_REFRESH_TIME) {
+		appConfig.Refresh = time.Duration(MIN_REFRESH_TIME)
+	}
+
 	appConfig.Ready = true
 
 	log.Println("load config successfully")
@@ -70,13 +79,18 @@ func (x *SmConfig) refreshNodeStatus() {
 			log.Println("skip status update...")
 			return
 		}
+		log.Println(currTime.Sub(x.UpdateTime), "have passed")
+	}
+
+	if appConfig.Reload {
+		LoadConfig()
 	}
 
 	//获取最新的客户端版本
 	x.getLatestNodeVersion()
 	//刷新每个Node的Post和Operator状态
 	for n := range x.Node {
-		x.Node[n].GetAllInformation()
+		x.Node[n].GetAllNodeInformation()
 		x.Node[n].getNodePostOperatorStatus()
 	}
 
