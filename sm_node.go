@@ -125,7 +125,7 @@ func (x *Node) setNodeToFailedStatus() {
 func (x *Node) setAnPrivateNode() {
 	alonePost := Post{
 		Title:  x.Name,
-		Status: x.NodeType,
+		Status: "Private Node",
 	}
 	x.PostInfo = append(x.PostInfo, alonePost)
 }
@@ -485,7 +485,15 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 			} else {
 				pwpBn = ""
 			}
-			htmlData += fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%s</td><td  class=\"td-left\">%s</td><td>%s</td><td>%s</td><td class=\"td-rtl\">%x</td><tr>", x.PostInfo[i].Title, x.PostInfo[i].NumUnits, x.PostInfo[i].Capacity, x.PostInfo[i].Status, elgBn, pwpBn, x.PostInfo[i].SmesherId)
+			unitsStr := "-"
+			sizeStr := "-"
+			if x.PostInfo[i].NumUnits > 0 {
+				unitsStr = fmt.Sprintf("%d", x.PostInfo[i].NumUnits)
+			}
+			if x.PostInfo[i].Capacity != "" {
+				sizeStr = x.PostInfo[i].Capacity
+			}
+			htmlData += fmt.Sprintf("<tr><td>%s</td><td>%s</td><td>%s</td><td  class=\"td-left\">%s</td><td>%s</td><td>%s</td><td class=\"td-rtl\">%x</td><tr>", x.PostInfo[i].Title, unitsStr, sizeStr, x.PostInfo[i].Status, elgBn, pwpBn, x.PostInfo[i].SmesherId)
 		}
 		htmlData += "</tbody>"
 	}
