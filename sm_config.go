@@ -75,11 +75,12 @@ func GetConfig() *SmConfig {
 func (x *SmConfig) refreshNodeStatus() {
 	if x.Updated {
 		currTime := time.Now()
-		if currTime.Sub(x.UpdateTime) < time.Duration(SM_LayerDuration) {
+		duration := currTime.Sub(x.UpdateTime)
+		if duration < MIN_REFRESH_TIME*time.Second {
 			log.Println("skip status update...")
 			return
 		}
-		log.Println(currTime.Sub(x.UpdateTime), "have passed")
+		log.Println(duration, " since last refresh time...")
 	}
 
 	if appConfig.Reload {
@@ -104,7 +105,9 @@ func (x *SmConfig) getLatestNodeVersion() {
 	if err != nil {
 		log.Println("get new version failed: ", err)
 	}
-	defer resp.Body.Close()
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 
 	type Release struct {
 		TagName string `json:"tag_name"`

@@ -12,12 +12,12 @@ import (
 // Node Status页面处理
 func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	config := GetConfig()
-	if config.Reload {
-		err := LoadConfig()
-		if err != nil {
-			log.Println("Reload config error: ", err)
-		}
-	}
+	// if config.Reload {
+	// 	err := LoadConfig()
+	// 	if err != nil {
+	// 		log.Println("Reload config error: ", err)
+	// 	}
+	// }
 	// 将 HTTP 连接升级为 WebSocket 连接
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -26,12 +26,6 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	// // 获取当前状态的HTML字符串
-	// htmlData := "<h3>获取节点状态中......</h3>"
-	// // 向客户端发送数据
-	// if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-	// 	log.Println("Failed to write message:", err)
-	// }
 	// //刷新节点状态
 	htmlData := getNodeStatusTableHTML()
 

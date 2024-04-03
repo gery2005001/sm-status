@@ -90,7 +90,7 @@ func (x *Node) GetAllNodeInformation() {
 
 	//从node的9093端口获取post的publickeys
 	if err := x.getNodePostPublicKeys(); err != nil {
-		x.setNodeToFailedStatus()
+		x.setAnPrivateNode()
 		log.Println(err)
 		return
 	}
@@ -241,7 +241,6 @@ func (x *Node) getNodePostPublicKeys() error {
 	log.Println("starting get Post Info from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
 	if err != nil {
-		x.setAnPrivateNode()
 		return err
 	}
 	defer conn.Close()
@@ -260,7 +259,6 @@ func (x *Node) getNodePostPublicKeys() error {
 	// 调用 gRPC 服务
 	response, err := client.SmesherIDs(ctx, request)
 	if err != nil {
-		x.setAnPrivateNode()
 		return err
 	}
 
