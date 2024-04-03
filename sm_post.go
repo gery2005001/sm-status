@@ -18,6 +18,7 @@ type Post struct {
 	SmesherId       []byte
 	Status          string
 	OaStatus        string
+	NumUnits        uint32 `json:"numunits"`
 }
 
 type SmPublish struct {

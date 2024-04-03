@@ -27,3 +27,12 @@ func DurationToTimeFormat(d time.Duration) string {
 
 	return result
 }
+
+// 返回units的TB
+func UnitsToTB(units uint32) string {
+	result := float64(units * 64 * 1024)
+
+	tb := result / (1024 * 1024)
+
+	return fmt.Sprintf("%.2fTB", tb)
+}

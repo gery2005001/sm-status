@@ -87,8 +87,21 @@ func (x *Node) GetAllInformation() {
 		return
 	}
 
+	//从node的9093端口获取post的publickeys
+	if err := x.getNodePostPublicKeys(); err != nil {
+		x.setNodeToFailedStatus()
+		log.Println(err)
+		return
+	}
+
 	//从node的PostService中获取
 	if err := x.getPostInfoState(); err != nil {
+		log.Println(err)
+		return
+	}
+
+	//从node的AdminService的EventsStreams中获取rewards记录
+	if err := x.getEventsStreams(); err != nil {
 		log.Println(err)
 		return
 	}
@@ -206,10 +219,9 @@ func (x *Node) getNodeVerAndStatus() error {
 	return nil
 }
 
-// // 从Node的PostInfoService中获取PostInfo
-func (x *Node) getPostInfoState() error {
+func (x *Node) getNodePostPublicKeys() error {
 	x.PostInfo = []Post{}
-	if x.NodeType != "multi" {
+	if x.NodeType != "multi" && x.NodeType != "alone" {
 		alonePost := Post{
 			Title:  x.Name,
 			Status: x.NodeType,
@@ -217,6 +229,63 @@ func (x *Node) getPostInfoState() error {
 		x.PostInfo = append(x.PostInfo, alonePost)
 		return nil
 	}
+	timeout := GetTimeout()
+	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
+
+	log.Println("starting get Post Info from ", grpcAddr)
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	// 创建 gRPC 客户端
+	client := pb.NewSmesherServiceClient(conn)
+	//client := pb.NewPostInfoServiceClient(conn)
+
+	// 设置超时时间为 3 秒
+	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
+	defer cancel()
+
+	// 构造请求
+	request := &emptypb.Empty{}
+
+	// 调用 gRPC 服务
+	response, err := client.SmesherIDs(ctx, request)
+	if err != nil {
+		return err
+	}
+
+	if len(response.PublicKeys) > 0 {
+		for i := 0; i < len(response.PublicKeys); i++ {
+			//通过id查询atx记录，获取numunits和size
+			smId := fmt.Sprintf("0x%x", response.PublicKeys[i])
+			log.Println("fond smersher id:", smId)
+			size := ""
+			nums := uint32(0)
+			atxs, err := GetActivations(smId)
+			if err == nil {
+				if len(atxs.Data) > 0 {
+					atx := atxs.Data[len(atxs.Data)-1]
+					nums = atx.NumUnits
+					size = utility.UnitsToTB(atx.NumUnits)
+
+				}
+			} else {
+				log.Println(err)
+			}
+			x.PostInfo = append(x.PostInfo, Post{
+				SmesherId: response.PublicKeys[i],
+				Capacity:  size,
+				NumUnits:  nums,
+			})
+		}
+	}
+	return nil
+}
+
+// // 从Node的PostInfoService中获取PostInfo
+func (x *Node) getPostInfoState() error {
 	timeout := GetTimeout()
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPostListener)
 
@@ -244,19 +313,15 @@ func (x *Node) getPostInfoState() error {
 	}
 	if len(response.States) > 0 {
 		for i := 0; i < len(response.States); i++ {
-			x.PostInfo = append(x.PostInfo, Post{
-				SmesherId: response.States[i].Id,
-				Title:     response.States[i].Name,
-				Status:    response.States[i].State.String(),
-			})
-
+			for j := 0; j < len(x.PostInfo); j++ {
+				if bytes.Equal(x.PostInfo[j].SmesherId, response.States[i].Id) {
+					x.PostInfo[j].Title = response.States[i].Name
+					x.PostInfo[j].Status = response.States[i].State.String()
+				}
+			}
 		}
 	}
 	log.Println("successfully get Post Info from ", grpcAddr)
-
-	if err := x.getEventsStreams(); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -363,9 +428,9 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	}
 	//生成页面
 	htmlData := "<table>"
-	htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
+	htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
 	htmlData += "<thead>"
-	htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"5\">"
+	htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"7\">"
 	htmlData += fmt.Sprintf("<span>状态：<b>"+"<span class=\"%s\">%s</span></b></span>", nodeSTColor, nodeSyncedText)
 	htmlData += "<span>　Node名称：<b>" + x.Name + "</b></span>　<span>IP：<b>" + x.IP + "</b></span>"
 	htmlData += fmt.Sprintf("<span>　版本：<span class=\"%s\"><b>%s</b></span></span>", verSTColor, x.NodeVer)
@@ -376,7 +441,7 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	htmlData += fmt.Sprintf("　<span>Epoch：<b>%d</b></span>", x.Epoch)
 	htmlData += "</td></tr>"
 	if x.PostInfo != nil {
-		htmlData += "<thead><tr><th>KEY</th><th>State</th><th>Eligibilities</th><th>Publish</th><th>ID</th></tr></thead>"
+		htmlData += "<thead><tr><th>KEY</th><th>Units</th><th>Size</th><th>State</th><th>Eligibilities</th><th>Publish</th><th>ID</th></tr></thead>"
 		htmlData += "<tbody>"
 		for i := 0; i < len(x.PostInfo); i++ {
 			elgMsg := ""
@@ -414,7 +479,7 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 			} else {
 				pwpBn = ""
 			}
-			htmlData += fmt.Sprintf("<tr><td>%s</td><td  class=\"td-left\">%s</td><td>%s</td><td>%s</td><td class=\"td-rtl\">%x</td><tr>", x.PostInfo[i].Title, x.PostInfo[i].Status, elgBn, pwpBn, x.PostInfo[i].SmesherId)
+			htmlData += fmt.Sprintf("<tr><td>%s</td><td>%d</td><td>%s</td><td  class=\"td-left\">%s</td><td>%s</td><td>%s</td><td class=\"td-rtl\">%x</td><tr>", x.PostInfo[i].Title, x.PostInfo[i].NumUnits, x.PostInfo[i].Capacity, x.PostInfo[i].Status, elgBn, pwpBn, x.PostInfo[i].SmesherId)
 		}
 		htmlData += "</tbody>"
 	}

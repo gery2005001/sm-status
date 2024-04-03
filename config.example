@@ -78,7 +78,7 @@
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
-      "enable": true,
+      "enable": false,
       "node-type": "alone",
       "post": [
         {
