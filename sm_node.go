@@ -5,9 +5,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	pb "sm-status/spacemesh/v1"
 	"sm-status/utility"
 	"time"
+
+	pb "github.com/spacemeshos/api/release/go/spacemesh/v1"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
