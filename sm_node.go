@@ -123,6 +123,7 @@ func (x *Node) setNodeToFailedStatus() {
 
 // 设置node为不能访问private端口的节点,条件是可以访问node status
 func (x *Node) setAnPrivateNode() {
+	x.PostInfo = []Post{}
 	alonePost := Post{
 		Title:  x.Name,
 		Status: "Private Node",
@@ -230,7 +231,6 @@ func (x *Node) getNodeVerAndStatus() error {
 }
 
 func (x *Node) getNodePostPublicKeys() error {
-	x.PostInfo = []Post{}
 	if x.NodeType != "multi" && x.NodeType != "alone" {
 		x.setAnPrivateNode()
 		return nil
@@ -266,7 +266,7 @@ func (x *Node) getNodePostPublicKeys() error {
 		for i := 0; i < len(response.PublicKeys); i++ {
 			//通过id查询atx记录，获取numunits和size
 			smId := fmt.Sprintf("0x%x", response.PublicKeys[i])
-			log.Println("fond smersher id:", smId)
+			//log.Println("fond smersher id:", smId)
 			size := ""
 			nums := uint32(0)
 			atxs, err := GetActivations(smId)
@@ -275,16 +275,34 @@ func (x *Node) getNodePostPublicKeys() error {
 					atx := atxs.Data[len(atxs.Data)-1]
 					nums = atx.NumUnits
 					size = utility.UnitsToTB(atx.NumUnits)
-
 				}
 			} else {
 				log.Println(err)
 			}
-			x.PostInfo = append(x.PostInfo, Post{
-				SmesherId: response.PublicKeys[i],
-				Capacity:  size,
-				NumUnits:  nums,
-			})
+			newKey := true
+			if len(x.PostInfo) > 0 {
+				for j := 0; j < len(x.PostInfo); j++ {
+					if bytes.Equal(x.PostInfo[j].SmesherId, response.PublicKeys[i]) {
+						x.PostInfo[j].Capacity = size
+						x.PostInfo[j].NumUnits = nums
+						newKey = false
+						break
+					}
+				}
+				if newKey {
+					x.PostInfo = append(x.PostInfo, Post{
+						SmesherId: response.PublicKeys[i],
+						Capacity:  size,
+						NumUnits:  nums,
+					})
+				}
+			} else {
+				x.PostInfo = append(x.PostInfo, Post{
+					SmesherId: response.PublicKeys[i],
+					Capacity:  size,
+					NumUnits:  nums,
+				})
+			}
 		}
 	}
 	return nil
