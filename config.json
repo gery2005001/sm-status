@@ -6,6 +6,24 @@
   "reload": true,
   "node": [
     {
+      "name": "JY-2697v2-Ub-DT",
+      "ip": "192.168.31.210",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": true,
+      "node-type": "multi",
+      "post": [
+        {
+          "enable": true,
+          "title": "646D0",
+          "capacity": "2.5TB",
+          "operator-address": "http://192.168.31.210:50050/status"
+        }
+      ]
+    },
+    {
       "name": "JXS-2698v4",
       "ip": "192.168.31.240",
       "grpc-public-listener": 9092,
