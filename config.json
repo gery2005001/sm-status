@@ -20,6 +20,12 @@
           "title": "646D0",
           "capacity": "2.5TB",
           "operator-address": "http://192.168.31.210:50050/status"
+        },
+        {
+          "enable": true,
+          "title": "10882",
+          "capacity": "2.5TB",
+          "operator-address": "http://192.168.31.210:50051/status"
         }
       ]
     },
