@@ -185,7 +185,7 @@
         },
         {
           "enable": true,
-          "title": "Fe1D1",
+          "title": "FE1D1",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.230:50056/status"
         }
