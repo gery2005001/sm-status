@@ -104,6 +104,7 @@ func (x *SmConfig) getLatestNodeVersion() {
 	resp, err := http.Get(SM_GetNewVerAddress)
 	if err != nil {
 		log.Println("get new version failed: ", err)
+		return
 	}
 	if resp != nil {
 		defer resp.Body.Close()
@@ -116,6 +117,7 @@ func (x *SmConfig) getLatestNodeVersion() {
 	var release Release
 	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
 		log.Println("decode Json failed: ", err)
+		return
 	}
 	x.LatestVer = release.TagName
 
