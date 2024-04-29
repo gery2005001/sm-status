@@ -6,8 +6,8 @@
   "reload": true,
   "node": [
     {
-      "name": "JY-2697v2-Ub-DT",
-      "ip": "192.168.31.210",
+      "name": "Node-12100T",
+      "ip": "192.168.31.209",
       "grpc-public-listener": 9092,
       "grpc-private-listener": 9093,
       "grpc-post-listener": 9094,
@@ -32,19 +32,7 @@
           "title": "FE1D1",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.230:50056/status"
-        }
-      ]
-    },
-    {
-      "name": "JXS-2698v4",
-      "ip": "192.168.31.240",
-      "grpc-public-listener": 9092,
-      "grpc-private-listener": 9093,
-      "grpc-post-listener": 9094,
-      "grpc-json-listener": 9095,
-      "enable": true,
-      "node-type": "multi",
-      "post": [
+        },
         {
           "enable": true,
           "title": "664F2",
@@ -80,19 +68,7 @@
           "title": "01586",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.240:50055/status"
-        }
-      ]
-    },
-    {
-      "name": "hn-2696v3x2",
-      "ip": "192.168.31.220",
-      "grpc-public-listener": 9092,
-      "grpc-private-listener": 9093,
-      "grpc-post-listener": 9094,
-      "grpc-json-listener": 9095,
-      "enable": true,
-      "node-type": "multi",
-      "post": [
+        },
         {
           "enable": true,
           "title": "67180",
@@ -140,19 +116,7 @@
           "title": "CCD09",
           "capacity": "3.50TB",
           "operator-address": "http://192.168.31.220:50057/status"
-        }
-      ]
-    },
-    {
-      "name": "JY-2696v3x2",
-      "ip": "192.168.31.230",
-      "grpc-public-listener": 9092,
-      "grpc-private-listener": 9093,
-      "grpc-post-listener": 9094,
-      "grpc-json-listener": 9095,
-      "enable": true,
-      "node-type": "multi",
-      "post": [
+        },
         {
           "enable": true,
           "title": "3B6D1",
@@ -188,19 +152,7 @@
           "title": "276AF",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.230:50055/status"
-        }
-      ]
-    },
-    {
-      "name": "Node-12100T",
-      "ip": "192.168.31.209",
-      "grpc-public-listener": 9092,
-      "grpc-private-listener": 9093,
-      "grpc-post-listener": 9094,
-      "grpc-json-listener": 9095,
-      "enable": true,
-      "node-type": "multi",
-      "post": [
+        },
         {
           "enable": true,
           "title": "1DB1F",
@@ -208,6 +160,50 @@
           "operator-address": "http://192.168.31.209:50050/status"
         }
       ]
+    },
+    {
+      "name": "JXS-2698v4",
+      "ip": "192.168.31.240",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": false,
+      "node-type": "multi",
+      "post": []
+    },
+    {
+      "name": "hn-2696v3x2",
+      "ip": "192.168.31.220",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": false,
+      "node-type": "multi",
+      "post": []
+    },
+    {
+      "name": "JY-2696v3x2",
+      "ip": "192.168.31.230",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": false,
+      "node-type": "multi",
+      "post": []
+    },
+    {
+      "name": "JY-2697v2-Ub-DT",
+      "ip": "192.168.31.210",
+      "grpc-public-listener": 9092,
+      "grpc-private-listener": 9093,
+      "grpc-post-listener": 9094,
+      "grpc-json-listener": 9095,
+      "enable": false,
+      "node-type": "multi",
+      "post": []
     }
   ]
 }
