@@ -199,32 +199,13 @@
       "grpc-post-listener": 9094,
       "grpc-json-listener": 9095,
       "enable": true,
-      "node-type": "alone",
+      "node-type": "multi",
       "post": [
         {
           "enable": true,
           "title": "1DB1F",
           "capacity": "3.50TB",
-          "operator-address": ""
-        }
-      ]
-    },
-    {
-      "name": "Node-New",
-      "ip": "192.168.31.231",
-      "grpc-public-listener": 9092,
-      "grpc-private-listener": 9093,
-      "grpc-post-listener": 9094,
-      "grpc-json-listener": 9095,
-      "enable": false,
-      "node-type": "alone",
-      "post": [
-        {
-          "type": "alone",
-          "enable": true,
-          "title": "new",
-          "capacity": "2.50TB",
-          "operator-address": ""
+          "operator-address": "http://192.168.31.209:50050/status"
         }
       ]
     }
