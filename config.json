@@ -59,6 +59,18 @@
         },
         {
           "enable": true,
+          "title": "CCD09",
+          "capacity": "3.50TB",
+          "operator-address": "http://192.168.31.220:50057/status"
+        },
+        {
+          "enable": true,
+          "title": "57168",
+          "capacity": "0.89GB",
+          "operator-address": "http://192.168.31.220:50058/status"
+        },
+        {
+          "enable": true,
           "title": "3B6D1",
           "capacity": "1.75TB",
           "operator-address": "http://192.168.31.230:50050/status"
@@ -146,12 +158,6 @@
           "title": "01586",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.240:50055/status"
-        },
-        {
-          "enable": true,
-          "title": "CCD09",
-          "capacity": "3.50TB",
-          "operator-address": "http://192.168.31.220:50057/status"
         }
       ]
     },
