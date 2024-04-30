@@ -17,57 +17,15 @@
       "post": [
         {
           "enable": true,
-          "title": "646D0",
-          "capacity": "2.5TB",
-          "operator-address": "http://192.168.31.118:50050/status"
-        },
-        {
-          "enable": true,
           "title": "10882",
           "capacity": "2.5TB",
-          "operator-address": "http://192.168.31.201:50050/status"
+          "operator-address": "http://192.168.31.210:50050/status"
         },
         {
           "enable": true,
-          "title": "FE1D1",
-          "capacity": "2.50TB",
-          "operator-address": "http://192.168.31.230:50056/status"
-        },
-        {
-          "enable": true,
-          "title": "664F2",
-          "capacity": "1.75TB",
-          "operator-address": "http://192.168.31.240:50050/status"
-        },
-        {
-          "enable": true,
-          "title": "9729A",
-          "capacity": "1.75TB",
-          "operator-address": "http://192.168.31.240:50051/status"
-        },
-        {
-          "enable": true,
-          "title": "C1A40",
-          "capacity": "2.50TB",
-          "operator-address": "http://192.168.31.240:50052/status"
-        },
-        {
-          "enable": true,
-          "title": "49134",
-          "capacity": "2.50TB",
-          "operator-address": "http://192.168.31.240:50053/status"
-        },
-        {
-          "enable": true,
-          "title": "D3620",
-          "capacity": "2.50TB",
-          "operator-address": "http://192.168.31.240:50054/status"
-        },
-        {
-          "enable": true,
-          "title": "01586",
-          "capacity": "2.50TB",
-          "operator-address": "http://192.168.31.240:50055/status"
+          "title": "646D0",
+          "capacity": "2.5TB",
+          "operator-address": "http://192.168.31.210:50051/status"
         },
         {
           "enable": true,
@@ -113,12 +71,6 @@
         },
         {
           "enable": true,
-          "title": "CCD09",
-          "capacity": "3.50TB",
-          "operator-address": "http://192.168.31.220:50057/status"
-        },
-        {
-          "enable": true,
           "title": "3B6D1",
           "capacity": "1.75TB",
           "operator-address": "http://192.168.31.230:50050/status"
@@ -155,9 +107,45 @@
         },
         {
           "enable": true,
-          "title": "1DB1F",
+          "title": "664F2",
+          "capacity": "1.75TB",
+          "operator-address": "http://192.168.31.240:50050/status"
+        },
+        {
+          "enable": true,
+          "title": "9729A",
+          "capacity": "1.75TB",
+          "operator-address": "http://192.168.31.240:50051/status"
+        },
+        {
+          "enable": true,
+          "title": "C1A40",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50052/status"
+        },
+        {
+          "enable": true,
+          "title": "49134",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50053/status"
+        },
+        {
+          "enable": true,
+          "title": "D3620",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50054/status"
+        },
+        {
+          "enable": true,
+          "title": "01586",
+          "capacity": "2.50TB",
+          "operator-address": "http://192.168.31.240:50055/status"
+        },
+        {
+          "enable": true,
+          "title": "CCD09",
           "capacity": "3.50TB",
-          "operator-address": "http://192.168.31.209:50050/status"
+          "operator-address": "http://192.168.31.220:50057/status"
         }
       ]
     },
