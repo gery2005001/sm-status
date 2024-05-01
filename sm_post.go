@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
-	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -35,17 +36,22 @@ type SmEligs struct {
 }
 
 // Post相关函数
-func (x *Post) getPostOperator() {
+
+// 多线程获取Post Operator Status
+func (x *Post) fetchPostOperator(wg *sync.WaitGroup, ch chan string) {
+	defer wg.Done()
 	if !x.Enable {
 		x.Status = ST_Disabled
 		x.OaStatus = "Post disabled"
-		log.Println("post is disabled.")
+		//log.Println("post is disabled.")
+		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
 	if x.OperatorAddress == "" {
 		x.Status = ST_Alone
 		x.OaStatus = "No operator address"
-		log.Println("no set operator address.")
+		//log.Println("no set operator address.")
+		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
 	// 创建一个带有超时设置的 HTTP 客户端
@@ -59,38 +65,41 @@ func (x *Post) getPostOperator() {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
 	defer cancel() // 一定要确保取消上下文
 
-	log.Println("get status from: ", x.OperatorAddress)
+	// log.Println("get status from: ", x.OperatorAddress)
 	// 发送带有上下文的 HTTP 请求
 	req, err := http.NewRequestWithContext(ctx, "GET", x.OperatorAddress, nil)
 	if err != nil {
-		log.Println("request operator failed:", err)
+		//log.Println("request operator failed:", err)
 		x.Status = ST_Failed
 		x.OaStatus = err.Error()
+		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
 
 	// 发送 HTTP 请求
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("request operator failed:", err)
+		//log.Println("request operator failed:", err)
 		x.Status = ST_Failed
 		x.OaStatus = err.Error()
+		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("operator read body failed:", err)
+		//log.Println("operator read body failed:", err)
 		x.Status = ST_Failed
 		x.OaStatus = err.Error()
+		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
 
 	x.Status = ST_Success
 	x.OaStatus = string(body)
-
-	log.Println("successfully get operator: ", x.OaStatus)
+	ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
+	//log.Println("successfully get operator: ", x.OaStatus)
 }
 
 func (x *Post) GetStatusColorCSS() string {

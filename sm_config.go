@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -83,16 +84,33 @@ func (x *SmConfig) refreshNodeStatus() {
 		log.Println(duration, " since last refresh time...")
 	}
 
+	x.Updated = false
+
 	if appConfig.Reload {
 		LoadConfig()
 	}
 
 	//获取最新的客户端版本
 	x.getLatestNodeVersion()
+
+	var w sync.WaitGroup
+	c := make(chan string)
+
 	//刷新每个Node的Post和Operator状态
 	for n := range x.Node {
-		x.Node[n].GetAllNodeInformation()
-		x.Node[n].getNodePostOperatorStatus()
+		w.Add(1)
+		go x.Node[n].GetNodeAllInformation(&w, c)
+		w.Add(1)
+		go x.Node[n].fetchNodePostOperatorStatus(&w, c)
+	}
+
+	go func() {
+		w.Wait()
+		close(c)
+	}()
+
+	for msg := range c {
+		log.Println(msg)
 	}
 
 	x.Updated = true

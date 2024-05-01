@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"sm-status/utility"
+	"sync"
 	"time"
 
 	pb "github.com/spacemeshos/api/release/go/spacemesh/v1"
@@ -520,16 +521,78 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	return htmlData
 }
 
-// 获取Node所有Post的OperatorStatus
-func (x *Node) getNodePostOperatorStatus() {
+// 多线程获取Node中所有Post的Operator Status
+func (x *Node) fetchNodePostOperatorStatus(w *sync.WaitGroup, c chan string) {
+	defer w.Done()
 	if !x.Enable || x.Status == ST_Failed {
-		log.Println("node is disabled or failed skip get Operator status")
+		//log.Println("node is disabled or failed skip get Operator status")
 		for i := 0; i < len(x.Post); i++ {
 			x.Post[i].Status = ST_Failed
 		}
+		c <- fmt.Sprintf("Node: %s ,Status: %s", x.Name, x.Status)
 		return
 	}
+
+	var wg sync.WaitGroup
+	ch := make(chan string)
+
 	for i := 0; i < len(x.Post); i++ {
-		x.Post[i].getPostOperator()
+		wg.Add(1)
+		go x.Post[i].fetchPostOperator(&wg, ch)
 	}
+
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	for msg := range ch {
+		log.Println(msg)
+	}
+
+	c <- fmt.Sprintf("Node: %s Get Operator Status completed", x.Name)
+}
+
+// 获取Node所有信息
+func (x *Node) GetNodeAllInformation(w *sync.WaitGroup, c chan string) {
+	defer w.Done()
+	//从node获取当前Epoch
+	if err := x.getCurrentEpoch(); err != nil {
+		x.setNodeToFailedStatus()
+		//log.Println(err)
+		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		return
+	}
+
+	//从node获取version和status
+	if err := x.getNodeVerAndStatus(); err != nil {
+		x.setNodeToFailedStatus()
+		//log.Println(err)
+		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		return
+	}
+
+	//从node的9093端口获取post的publickeys
+	if err := x.getNodePostPublicKeys(); err != nil {
+		x.setAnPrivateNode()
+		//log.Println(err)
+		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		return
+	}
+
+	//从node的PostService中获取
+	if err := x.getPostInfoState(); err != nil {
+		//log.Println(err)
+		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		return
+	}
+
+	//从node的AdminService的EventsStreams中获取rewards记录
+	if err := x.getEventsStreams(); err != nil {
+		//log.Println(err)
+		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		return
+	}
+
+	c <- fmt.Sprintf("Node: %s, get all information completed", x.Name)
 }

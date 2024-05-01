@@ -39,15 +39,17 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer ticker.Stop()
 
 	for range ticker.C {
-		// 获取状态数据
-		htmlData = getNodeStatusTableHTML()
-		//log.Println(htmlData)
-		// 向客户端发送数据
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-			log.Println("WS Write failed:", err)
-			return
+		if config.Updated {
+			// 获取状态数据
+			htmlData = getNodeStatusTableHTML()
+			//log.Println(htmlData)
+			// 向客户端发送数据
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
+				log.Println("WS Write failed:", err)
+				return
+			}
+			log.Println("WS Write successfully")
 		}
-		log.Println("WS Write successfully")
 	}
 }
 
