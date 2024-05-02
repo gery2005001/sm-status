@@ -73,42 +73,6 @@ func (x *Node) GetStatusColorCSS() string {
 	}
 }
 
-// 获取Node所有信息
-func (x *Node) GetAllNodeInformation() {
-	//从node获取当前Epoch
-	if err := x.getCurrentEpoch(); err != nil {
-		x.setNodeToFailedStatus()
-		log.Println(err)
-		return
-	}
-
-	//从node获取version和status
-	if err := x.getNodeVerAndStatus(); err != nil {
-		x.setNodeToFailedStatus()
-		log.Println(err)
-		return
-	}
-
-	//从node的9093端口获取post的publickeys
-	if err := x.getNodePostPublicKeys(); err != nil {
-		x.setAnPrivateNode()
-		log.Println(err)
-		return
-	}
-
-	//从node的PostService中获取
-	if err := x.getPostInfoState(); err != nil {
-		log.Println(err)
-		return
-	}
-
-	//从node的AdminService的EventsStreams中获取rewards记录
-	if err := x.getEventsStreams(); err != nil {
-		log.Println(err)
-		return
-	}
-}
-
 // 清除node相关状态信息
 func (x *Node) setNodeToFailedStatus() {
 	x.Status = ST_Failed
