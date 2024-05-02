@@ -21,7 +21,7 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	// 将 HTTP 连接升级为 WebSocket 连接
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println("Failed to upgrade to WebSocket: ", err)
+		log.Println("Failed to upgrade NS to WebSocket: ", err)
 		return
 	}
 	defer conn.Close()
@@ -31,9 +31,9 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 向客户端发送数据
 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-		log.Println("WS Write failed:", err)
+		log.Println("NS WebSocket Write failed:", err)
 	}
-	log.Println("WS Write successfully")
+	log.Println("NS WebSocket Write successfully")
 
 	// 每隔指定时间推送状态
 	ticker := time.NewTicker(config.Interval * time.Second)
@@ -46,10 +46,10 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 			//log.Println(htmlData)
 			// 向客户端发送数据
 			if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-				log.Println("WS Write failed:", err)
+				log.Println("NS WebSocket Write failed:", err)
 				return
 			}
-			log.Println("WS Write successfully")
+			log.Println("NS WebSocket Write successfully")
 		}
 	}
 }
