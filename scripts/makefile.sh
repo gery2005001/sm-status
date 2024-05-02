@@ -4,7 +4,7 @@
  # @Date: 2022-08-07 02:06:33
  # @LastEditors: gery2005
  # @LastEditTime: 2022-09-26 18:38:36
- # @FilePath: \erpgo\makefile.sh
+ # @FilePath: \scripts\makefile.sh
  # @Description: 编译项目脚本
  # 
  # Copyright (c) 2022 by gery2005@gmail.com, All Rights Reserved. 

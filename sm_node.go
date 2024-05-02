@@ -144,7 +144,7 @@ func (x *Node) getCurrentEpoch() error {
 	log.Println("Starting get node current epoch from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeOut))
 	if err != nil {
-		log.Println("get current epoch failed.")
+		log.Printf("get node %s epoch error: %s\n", x.Name, err.Error())
 		return err
 	}
 	defer conn.Close()
@@ -161,7 +161,7 @@ func (x *Node) getCurrentEpoch() error {
 
 	resEpoch, err := client.CurrentEpoch(ctx, &reqEpoch)
 	if err != nil {
-		log.Println("get current eopch failed.")
+		log.Printf("get node %s epoch error: %s\n", x.Name, err.Error())
 		return err
 	}
 	x.Epoch = resEpoch.Epochnum.Number
@@ -179,6 +179,7 @@ func (x *Node) getNodeVerAndStatus() error {
 	log.Println("starting get node version and status from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
 	if err != nil {
+		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
 		return err
 	}
 	defer conn.Close()
@@ -194,6 +195,7 @@ func (x *Node) getNodeVerAndStatus() error {
 	reqVer := &emptypb.Empty{}
 	resVer, err := client.Version(ctx, reqVer)
 	if err != nil {
+		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
 		return err
 	}
 	x.NodeVer = resVer.VersionString.Value
@@ -213,6 +215,7 @@ func (x *Node) getNodeVerAndStatus() error {
 	resStatus, err := client.Status(ctx, reqStatus)
 
 	if err != nil {
+		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
 		return err
 	}
 
@@ -242,6 +245,7 @@ func (x *Node) getNodePostPublicKeys() error {
 	log.Println("starting get Post Info from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
 	if err != nil {
+		log.Printf("get node %s key error: %s\n", x.Name, err.Error())
 		return err
 	}
 	defer conn.Close()
@@ -260,6 +264,7 @@ func (x *Node) getNodePostPublicKeys() error {
 	// 调用 gRPC 服务
 	response, err := client.SmesherIDs(ctx, request)
 	if err != nil {
+		log.Printf("get node %s key error: %s\n", x.Name, err.Error())
 		return err
 	}
 
@@ -317,6 +322,7 @@ func (x *Node) getPostInfoState() error {
 	log.Println("starting get Post Info from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
 	if err != nil {
+		log.Printf("get node %s post info error: %s\n", x.Name, err.Error())
 		return err
 	}
 	defer conn.Close()
@@ -334,6 +340,7 @@ func (x *Node) getPostInfoState() error {
 	// 调用 gRPC 服务
 	response, err := client.PostStates(ctx, request)
 	if err != nil {
+		log.Printf("get node %s post info error: %s\n", x.Name, err.Error())
 		return err
 	}
 	if len(response.States) > 0 {
@@ -363,6 +370,7 @@ func (x *Node) getEventsStreams() error {
 	log.Println("starting get Events Stream from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
 	if err != nil {
+		log.Printf("get node %s post events error: %s\n", x.Name, err.Error())
 		return err
 	}
 	defer conn.Close()
@@ -380,6 +388,7 @@ func (x *Node) getEventsStreams() error {
 	// 调用 gRPC 服务
 	esClient, err := client.EventsStream(ctx, request)
 	if err != nil {
+		log.Printf("get node %s post events error: %s\n", x.Name, err.Error())
 		return err
 	}
 
