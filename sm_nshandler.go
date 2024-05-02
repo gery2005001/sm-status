@@ -33,6 +33,7 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
 		log.Println("WS Write failed:", err)
 	}
+	log.Println("WS Write successfully")
 
 	// 每隔指定时间推送状态
 	ticker := time.NewTicker(config.Interval * time.Second)

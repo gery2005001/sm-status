@@ -12,12 +12,7 @@ import (
 // Post Status页面处理
 func postStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	config := GetConfig()
-	// if config.Reload {
-	// 	err := LoadConfig()
-	// 	if err != nil {
-	// 		log.Println("Reload config error: ", err)
-	// 	}
-	// }
+
 	// 将 HTTP 连接升级为 WebSocket 连接
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -32,13 +27,14 @@ func postStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
 		log.Println("WS Write failed:", err)
 	}
+	log.Println("WS Write successfully")
 
 	// 每隔指定时间推送状态
 	ticker := time.NewTicker(config.Interval * time.Second)
 	defer ticker.Stop()
 
 	for range ticker.C {
-		htmlData := getPostStatusTableHTML()
+		htmlData = getPostStatusTableHTML()
 		//log.Println(htmlData)
 		// 向客户端发送数据
 		if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {

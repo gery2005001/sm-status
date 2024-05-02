@@ -32,9 +32,6 @@ var appConfig SmConfig = SmConfig{}
 var configFile string = "config.json"
 
 func GetTimeout() time.Duration {
-	if appConfig.Timeout < time.Duration(MIN_TIMEOUT) || appConfig.Timeout > time.Duration(MAX_TIMEOUT) {
-		return time.Duration(MIN_TIMEOUT)
-	}
 	return appConfig.Timeout
 }
 
