@@ -54,8 +54,12 @@ func LoadConfig() error {
 		return err
 	}
 
-	if appConfig.Refresh < time.Duration(MIN_REFRESH_TIME) || appConfig.Timeout > time.Duration(MAX_REFRESH_TIME) {
+	if appConfig.Refresh < time.Duration(MIN_REFRESH_TIME) || appConfig.Refresh > time.Duration(MAX_REFRESH_TIME) {
 		appConfig.Refresh = time.Duration(MIN_REFRESH_TIME)
+	}
+
+	if appConfig.Timeout < time.Duration(MIN_TIMEOUT) || appConfig.Timeout > time.Duration(MAX_TIMEOUT) {
+		appConfig.Timeout = time.Duration(MIN_TIMEOUT)
 	}
 
 	appConfig.Ready = true
