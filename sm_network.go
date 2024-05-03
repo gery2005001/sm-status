@@ -148,7 +148,7 @@ func (x *NetworkInfo) GetHtmlString() string {
 		Type:  1,
 	})
 	layerTimes = append(layerTimes, Layers{
-		Name:  fmt.Sprintf("Epoch %d", x.Epoch.Number+1),
+		Name:  "Epoch End",
 		Desc:  "",
 		Time:  0,
 		Layer: x.Epoch.LayerEnd,
