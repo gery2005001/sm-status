@@ -21,7 +21,7 @@ const (
 	GetNetworkInfoUrl = "https://mainnet-explorer-api.spacemesh.network/network-info"
 )
 
-var BlockClass = []string{"block-now", "block-start-end", "block-running"}
+var BlockClass = []string{"block-now", "block-start-end", "block-running", "block-elgs"}
 
 var SmNetworkInfo NetworkInfo = NetworkInfo{}
 

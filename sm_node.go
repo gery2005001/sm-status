@@ -322,6 +322,13 @@ func (x *Node) getPostInfoState() error {
 	return nil
 }
 
+// 清除Node的PostInfo中所有Elgs和Public信息
+func (x *Node) cleanEligibilities() {
+	for n := range x.PostInfo {
+		x.PostInfo[n].Eligs = []SmEligs{}
+	}
+}
+
 // 从Node的GRPC服务中获取Events
 func (x *Node) getEventsStreams() error {
 	if x.NodeType == "smapp" {
@@ -355,6 +362,8 @@ func (x *Node) getEventsStreams() error {
 		log.Printf("get node %s post events error: %s\n", x.Name, err.Error())
 		return err
 	}
+
+	x.cleanEligibilities()
 
 	nEvent := &pb.Event{}
 	for {
@@ -447,6 +456,7 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 			elgEnd := "✓"
 			leftTime := ""
 			elgBtnStyle := "btn-running"
+
 			for _, elg := range x.PostInfo[i].Eligs {
 				if elg.Epoch >= x.Epoch {
 					if elg.Layer == x.TLayer {

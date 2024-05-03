@@ -70,7 +70,7 @@ span {
   direction: rtl;
 }
 .node-info {
-  background-color: #75b5fd;
+  background-color: #75b5fd; /* 旧颜色 #75b5fd*/
 }
 
 .btn-success {
@@ -139,24 +139,29 @@ span {
 
 .block-table {
   font-size: small;
-  margin-left: 4px;
-  margin-right: 4px;
 }
 
 .block-now {
-  background-color: #75b5fd;
-  color: black;
-  margin-right: 1rem;
+  background-color: #0000ff;
+  color: white;
 }
 
 .block-start-end {
-  background-color: #60a917;
+  background-color: aqua;
   color: black;
-  margin-right: 1rem;
 }
 
 .block-running {
-  background-color: #e3b448;
+  background-color: #9370db;
   color: black;
-  margin-right: 1rem;
+}
+
+.block-elgs {
+  background-color: #7cfc00;
+  color: black;
+}
+
+.td-chunk {
+  padding: 4px;
+  padding: 1rem 0.5rem;
 }

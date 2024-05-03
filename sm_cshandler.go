@@ -9,8 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// Node Status页面处理
-func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
+// chunk Status页面处理
+func chunkStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	config := GetConfig()
 	// 将 HTTP 连接升级为 WebSocket 连接
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -21,7 +21,7 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 
 	// //刷新节点状态
-	htmlData := getNodeStatusTableHTML()
+	htmlData := getAllChunksTableHTML()
 
 	// 向客户端发送数据
 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
@@ -36,7 +36,7 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	for range ticker.C {
 		if config.Updated {
 			// 获取状态数据
-			htmlData = getNodeStatusTableHTML()
+			htmlData = getAllChunksTableHTML()
 			//log.Println(htmlData)
 			// 向客户端发送数据
 			if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
@@ -48,21 +48,16 @@ func nodeStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getNodeStatusTableHTML() string {
+func getAllChunksTableHTML() string {
 	//输出Node 状态表
 	config := GetConfig()
-
-	htmlData := SmNetworkInfo.GetHtmlString()
-
-	for n := 0; n < len(config.Node); n++ {
-		htmlData += config.Node[n].GetNodeStatusTableHTMLString()
-	}
+	htmlData := GetChunksTableHTML()
 
 	htmlData += fmt.Sprintf("latest version: <b>%s</b></br>", config.LatestVer)
 	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/post\">切换到Post State</a></br>"
-	htmlData += "<a href=\"/chunk\">切换到Chunks</a></br>"
+	htmlData += "<a href=\"/node\">切换到Node State</a></br>"
 
 	return htmlData
 }

@@ -38,3 +38,16 @@ func UnitsToTB(units uint32) string {
 
 	return fmt.Sprintf("%.2fTB", tb)
 }
+
+// 给一个时间戳添加或减去指定的秒
+func TimeStampAddSecond(t uint32, s time.Duration) int64 {
+	timeStamp := int64(t)
+	//timeStamp转负成time.Time类型
+	srcTime := time.Unix(timeStamp, 0)
+	//增加指定的秒数
+	newTime := srcTime.Add(s * time.Second)
+	//获取新的时间戳
+	newTimeStamp := newTime.Unix()
+
+	return newTimeStamp
+}

@@ -104,6 +104,7 @@ func getPostStatusTableHTML() string {
 	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
 	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/node\">切换到Node State</a></br>"
+	htmlData += "<a href=\"/chunk\">切换到Chunks</a></br>"
 
 	return htmlData
 }
