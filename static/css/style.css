@@ -139,29 +139,38 @@ span {
 
 .block-table {
   font-size: small;
+  border-collapse: separate;
+  border-spacing: 5px 10px;
 }
 
 .block-now {
   background-color: #0000ff;
   color: white;
+  transform: scale(0.9);
+  border: 0px solid brown;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .block-start-end {
   background-color: aqua;
   color: black;
+  border-color: #fff;
 }
 
 .block-running {
   background-color: #9370db;
   color: black;
+  border-color: #fff;
 }
 
 .block-elgs {
   background-color: #7cfc00;
   color: black;
+  border-color: #fff;
 }
 
 .td-chunk {
   padding: 4px;
   padding: 1rem 0.5rem;
+  border-color: #fff;
 }
