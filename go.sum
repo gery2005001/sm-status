@@ -12,8 +12,6 @@ github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/spacemeshos/api/release/go v1.36.0 h1:FzK+v5ZbgY8goWC6XDqVgb2hjNGzZQkMApPycynLg6E=
 github.com/spacemeshos/api/release/go v1.36.0/go.mod h1:3vIzTSkbLZBwgiaOzl/kVa0Jd++X6n67FlN9RdCJXZI=
-github.com/spacemeshos/explorer-backend v1.5.9 h1:/cbvnu67jy6o15cr5+/6g6DGQ6VPL50Qh6ORWfAesl0=
-github.com/spacemeshos/explorer-backend v1.5.9/go.mod h1:xoJDDH+WSFA4gzD4CyF/138pya9ib38zBQgkD45MV9A=
 github.com/urfave/cli/v2 v2.27.1 h1:8xSQ6szndafKVRmfyeUMxkNUJQMjL1F2zmsZ+qHpfho=
 github.com/urfave/cli/v2 v2.27.1/go.mod h1:8qnjx1vcq5s2/wpsqoZFndg2CE5tNFyrTvS6SinrnYQ=
 github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 h1:bAn7/zixMGCfxrRTfdpNzjtPYqr8smhKouy9mxVdGPU=

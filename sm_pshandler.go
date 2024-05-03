@@ -51,7 +51,9 @@ func getPostStatusTableHTML() string {
 	config := GetConfig()
 	//config.refreshOperatorStatus()
 	//log.Println(config.toJSONString())
-	var htmlData string
+
+	htmlData := SmNetworkInfo.GetHtmlString()
+
 	for n, node := range config.Node {
 		if node.Enable {
 			//获取node状态

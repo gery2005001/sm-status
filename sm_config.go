@@ -64,6 +64,11 @@ func LoadConfig() error {
 
 	appConfig.Ready = true
 
+	err = GetNetworkInfo()
+	if err != nil {
+		log.Println("get network infomation error!")
+	}
+
 	log.Println("load config successfully")
 	return nil
 }
@@ -93,6 +98,12 @@ func (x *SmConfig) refreshNodeStatus() {
 
 	//获取最新的客户端版本
 	x.getLatestNodeVersion()
+
+	//获取NetworkInfo
+	err := GetNetworkInfo()
+	if err != nil {
+		log.Println("get network infomation error!")
+	}
 
 	var w sync.WaitGroup
 	c := make(chan string)

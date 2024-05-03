@@ -136,3 +136,27 @@ span {
   min-width: 400px;
   max-width: 500px;
 }
+
+.block-table {
+  font-size: small;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.block-now {
+  background-color: #75b5fd;
+  color: black;
+  margin-right: 1rem;
+}
+
+.block-start-end {
+  background-color: #60a917;
+  color: black;
+  margin-right: 1rem;
+}
+
+.block-running {
+  background-color: #e3b448;
+  color: black;
+  margin-right: 1rem;
+}

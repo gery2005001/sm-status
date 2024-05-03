@@ -8,7 +8,9 @@ import (
 // 将传入的分钟数转换为格式为"2d 1h 0m"的字符串
 func DurationToTimeFormat(d time.Duration) string {
 	//log.Println("LeftTime:", d)
+	tag := ""
 	if d < 0 {
+		tag = "-"
 		d = -d
 	}
 	// 分别计算天、小时、分钟的值
@@ -25,7 +27,7 @@ func DurationToTimeFormat(d time.Duration) string {
 
 	result += fmt.Sprintf("%dm", minutes)
 
-	return result
+	return tag + result
 }
 
 // 返回units的TB
