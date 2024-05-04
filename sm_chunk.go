@@ -109,7 +109,7 @@ func GetElgChunks() []Chunk {
 								nameTag = fmt.Sprintf("【%d】", config.Node[i].PostInfo[j].Eligs[k].Count)
 							}
 							ElgChunks = append(ElgChunks, Chunk{
-								Name:  nameTag,
+								Name:  config.Node[i].PostInfo[j].Title + nameTag,
 								Layer: elg.Layer,
 								When:  whenDuration,
 								Desc:  utility.DurationToTimeFormat(whenDuration * time.Second),
@@ -145,6 +145,7 @@ func GetChunksTableHTML() string {
 				over = true
 				allChunks[n].Desc = time.Now().Format("2006-01-02 15:04:05")
 				allChunks[n].Type = 0
+				allChunks[n].Name += "【Now】"
 			}
 		}
 		if !over {
