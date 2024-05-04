@@ -205,7 +205,7 @@ func (x *Node) getNodePostPublicKeys() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 
 	log.Println("starting get Post Info from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Printf("get node %s key error: %s\n", x.Name, err.Error())
 		return err
@@ -282,7 +282,7 @@ func (x *Node) getPostInfoState() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPostListener)
 
 	log.Println("starting get Post Info from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Printf("get node %s post info error: %s\n", x.Name, err.Error())
 		return err
@@ -337,7 +337,7 @@ func (x *Node) getEventsStreams() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 
 	log.Println("starting get Events Stream from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Printf("get node %s post events error: %s\n", x.Name, err.Error())
 		return err
