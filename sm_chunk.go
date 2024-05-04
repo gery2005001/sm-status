@@ -104,12 +104,13 @@ func GetElgChunks() []Chunk {
 						if elg.Epoch == uint32(SmNetworkInfo.Epoch.Number) {
 							whenLayer := int(elg.Layer) - int(SmNetworkInfo.Layer.Number)
 							whenDuration := time.Duration(whenLayer * LayerDuration)
+							name := config.Node[i].Name + "<br />" + config.Node[i].PostInfo[j].Title
 							nameTag := "【✓】"
 							if whenDuration > 0 {
 								nameTag = fmt.Sprintf("【%d】", config.Node[i].PostInfo[j].Eligs[k].Count)
 							}
 							ElgChunks = append(ElgChunks, Chunk{
-								Name:  config.Node[i].PostInfo[j].Title + nameTag,
+								Name:  name + nameTag,
 								Layer: elg.Layer,
 								When:  whenDuration,
 								Desc:  utility.DurationToTimeFormat(whenDuration * time.Second),
