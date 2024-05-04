@@ -101,7 +101,6 @@ func (x *Node) getCurrentEpoch() error {
 	if !x.Enable {
 		return fmt.Errorf("node %s ip %s is disabled", x.Name, x.IP)
 	}
-	timeOut := GetTimeout()
 
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPublicListener)
 
@@ -117,7 +116,7 @@ func (x *Node) getCurrentEpoch() error {
 	client := pb.NewMeshServiceClient(conn)
 
 	// 设置超时时间
-	ctx, cancel := context.WithTimeout(context.Background(), timeOut*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), GetTimeout()*time.Second)
 	defer cancel()
 
 	// 查询当前Epoch
@@ -137,11 +136,10 @@ func (x *Node) getCurrentEpoch() error {
 
 // 从Node的GRPC服务中获取Node的version和status
 func (x *Node) getNodeVerAndStatus() error {
-	timeout := GetTimeout()
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPublicListener)
 
 	log.Println("starting get node version and status from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
 		return err
@@ -152,7 +150,7 @@ func (x *Node) getNodeVerAndStatus() error {
 	client := pb.NewNodeServiceClient(conn)
 
 	// 设置超时时间
-	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), GetTimeout()*time.Second)
 	defer cancel()
 
 	// 获取node的版本号

@@ -55,14 +55,12 @@ func (x *Post) fetchPostOperator(wg *sync.WaitGroup, ch chan string) {
 		return
 	}
 	// 创建一个带有超时设置的 HTTP 客户端
-	timeout := GetTimeout()
-
 	client := &http.Client{
-		Timeout: timeout * time.Second, // 设置超时时间
+		Timeout: GetTimeout() * time.Second, // 设置超时时间
 	}
 
 	// 创建一个上下文对象
-	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), GetTimeout()*time.Second)
 	defer cancel() // 一定要确保取消上下文
 
 	// log.Println("get status from: ", x.OperatorAddress)
