@@ -8,6 +8,8 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type SmConfig struct {
@@ -92,18 +94,19 @@ func (x *SmConfig) refreshNodeStatus() {
 
 	x.Updated = false
 
-	if appConfig.Reload {
-		LoadConfig()
-	}
-
 	//获取最新的客户端版本
-	x.getLatestNodeVersion()
+	go x.getLatestNodeVersion()
 
 	//获取NetworkInfo
-	err := GetNetworkInfo()
-	if err != nil {
+	g := new(errgroup.Group)
+	g.Go(GetNetworkInfo)
+	if err := g.Wait(); err != nil {
 		log.Println("get network infomation error!")
 	}
+	// err := GetNetworkInfo()
+	// if err != nil {
+	// 	log.Println("get network infomation error!")
+	// }
 
 	var w sync.WaitGroup
 	c := make(chan string)
@@ -131,7 +134,11 @@ func (x *SmConfig) refreshNodeStatus() {
 
 // 从github获取node最新版本号
 func (x *SmConfig) getLatestNodeVersion() {
-	resp, err := http.Get(SM_GetNewVerAddress)
+	client := &http.Client{
+		Timeout: GetTimeout() * time.Second,
+	}
+
+	resp, err := client.Get(SM_GetNewVerAddress)
 	if err != nil {
 		log.Println("get new version failed: ", err)
 		return

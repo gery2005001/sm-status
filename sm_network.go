@@ -92,7 +92,11 @@ type NetworkInfo struct {
 // 从网络获取Epoch信息
 func GetNetworkInfo() error {
 	log.Println("start get network info...")
-	resp, err := http.Get(GetNetworkInfoUrl)
+	client := &http.Client{
+		Timeout: GetTimeout() * time.Second,
+	}
+
+	resp, err := client.Get(GetNetworkInfoUrl)
 	if err != nil {
 		log.Println("get epoch infomation failed: ", err)
 		return err
