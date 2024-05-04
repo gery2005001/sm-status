@@ -25,9 +25,9 @@ func chunkStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 向客户端发送数据
 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-		log.Println("NS WebSocket Write failed:", err)
+		log.Println("CS WebSocket Write failed:", err)
 	}
-	log.Println("NS WebSocket Write successfully")
+	log.Println("CS WebSocket Write successfully")
 
 	// 每隔指定时间推送状态
 	ticker := time.NewTicker(config.Interval * time.Second)
@@ -40,10 +40,10 @@ func chunkStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
 			//log.Println(htmlData)
 			// 向客户端发送数据
 			if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-				log.Println("NS WebSocket Write failed:", err)
+				log.Println("CS WebSocket Write failed:", err)
 				return
 			}
-			log.Println("NS WebSocket Write successfully")
+			log.Println("CS WebSocket Write successfully")
 		}
 	}
 }
