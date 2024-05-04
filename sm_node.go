@@ -106,7 +106,7 @@ func (x *Node) getCurrentEpoch() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPublicListener)
 
 	log.Println("Starting get node current epoch from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeOut))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("get node %s epoch error: %s\n", x.Name, err.Error())
 		return err
@@ -141,7 +141,7 @@ func (x *Node) getNodeVerAndStatus() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPublicListener)
 
 	log.Println("starting get node version and status from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
 		return err
@@ -207,7 +207,7 @@ func (x *Node) getNodePostPublicKeys() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 
 	log.Println("starting get Post Info from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("get node %s key error: %s\n", x.Name, err.Error())
 		return err
@@ -284,7 +284,7 @@ func (x *Node) getPostInfoState() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPostListener)
 
 	log.Println("starting get Post Info from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("get node %s post info error: %s\n", x.Name, err.Error())
 		return err
@@ -339,7 +339,7 @@ func (x *Node) getEventsStreams() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 
 	log.Println("starting get Events Stream from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithIdleTimeout(timeout))
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Printf("get node %s post events error: %s\n", x.Name, err.Error())
 		return err

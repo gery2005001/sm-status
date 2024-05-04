@@ -95,7 +95,7 @@ func (x *SmConfig) refreshNodeStatus() {
 	x.Updated = false
 
 	//获取最新的客户端版本
-	go x.getLatestNodeVersion()
+	x.getLatestNodeVersion()
 
 	//获取NetworkInfo
 	g := new(errgroup.Group)
