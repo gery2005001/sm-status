@@ -33,6 +33,7 @@ type SmEligs struct {
 	Epoch uint32
 	Layer uint32
 	Count uint32
+	Total uint64
 }
 
 // Post相关函数

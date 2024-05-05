@@ -381,11 +381,19 @@ func (x *Node) getEventsStreams() error {
 				if bytes.Equal(sm.SmesherId, nEvent.GetEligibilities().Smesher) {
 					tmElgs := nEvent.GetEligibilities()
 					for _, elg := range tmElgs.Eligibilities {
+						var total = uint64(0)
+						if elg.Layer < SmNetworkInfo.Layer.Number && elg.Layer >= SmNetworkInfo.Epoch.LayerStart {
+							total, err = x.GetLayerRewardWithSmesher(elg.Layer, sm.SmesherId)
+							if err != nil {
+								log.Printf("Layer %d not found reward for smesher %x \n", elg.Layer, sm.SmesherId)
+							}
+						}
 						x.PostInfo[i].Eligs = append(x.PostInfo[i].Eligs, SmEligs{
 							Time:  nEvent.Timestamp.AsTime(),
 							Epoch: nEvent.GetEligibilities().GetEpoch(),
 							Layer: elg.Layer,
 							Count: elg.Count,
+							Total: total,
 						})
 					}
 				}
@@ -464,7 +472,11 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 						lt := (x.TLayer - elg.Layer) * SM_LayerDuration
 						elgBtnStyle = "btn-success"
 						leftTime = "-" + utility.DurationToTimeFormat(time.Duration(lt)*time.Second)
-						elgEnd = "【✓】"
+						if elg.Total > 0 {
+							elgEnd = fmt.Sprintf("%.4f", float64(elg.Total)/1000000000)
+						} else {
+							elgEnd = "【✓】"
+						}
 					} else {
 						lt := (elg.Layer - x.TLayer) * SM_LayerDuration
 						leftTime = utility.DurationToTimeFormat(time.Duration(lt) * time.Second)

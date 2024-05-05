@@ -106,7 +106,15 @@ func GetElgChunks() []Chunk {
 							whenDuration := time.Duration(whenLayer * LayerDuration)
 							name := config.Node[i].Name + "<br />" + config.Node[i].PostInfo[j].Title
 							nameTag := "【✓】"
-							if whenDuration > 0 {
+							if whenDuration <= 0 {
+								if whenDuration == 0 {
+									nameTag = "【Now】"
+								} else {
+									if elg.Total > 0 {
+										nameTag = fmt.Sprintf("<br />%.4f", float64(elg.Total)/1000000000)
+									}
+								}
+							} else {
 								nameTag = fmt.Sprintf("【%d】", config.Node[i].PostInfo[j].Eligs[k].Count)
 							}
 							ElgChunks = append(ElgChunks, Chunk{
@@ -151,7 +159,7 @@ func GetChunksTableHTML() string {
 		}
 		if !over {
 			allChunks = append(allChunks, Chunk{
-				Name:  "Now",
+				Name:  "【Now】",
 				Desc:  time.Now().Format("2006-01-02") + "<br />" + time.Now().Format("15:04:05"),
 				When:  0,
 				Layer: SmNetworkInfo.Layer.Number,

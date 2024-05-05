@@ -13,6 +13,6 @@
 current_date=`date -d "1 minute ago" +"%Y-%m-%d"`
 current_time=`date -d "1 minute ago" +"%H:%M:%S%:z"`
 go_version=`go version`
-app_version="0.4.2"
+app_version="0.4.3"
 
 go build  -o sm-status -ldflags "-s -w -X sm-status/version.Version=$app_version -X 'sm-status/version.BuildDate=$current_date' -X 'sm-status/version.BuildTime=$current_time' -X 'sm-status/version.GO_Version=$go_version'" .
