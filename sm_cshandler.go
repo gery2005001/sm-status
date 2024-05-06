@@ -53,9 +53,14 @@ func getAllChunksTableHTML() string {
 	config := GetConfig()
 	htmlData := GetChunksTableHTML()
 
-	htmlData += fmt.Sprintf("latest version: <b>%s</b></br>", config.LatestVer)
+	var reward float64 = 0
+	if RewardTotal > 0 {
+		reward = float64(RewardTotal) / 1000000000
+	}
+	htmlData += fmt.Sprintf("<b>Reward Total: </b> %.4f smh<br />", reward)
+	htmlData += fmt.Sprintf("<b>Latest version: </b>%s</br>", config.LatestVer)
 	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
-	htmlData += "<b>更新时间:</b>" + currentTime + "</br>"
+	htmlData += "<b>Update Time: </b>" + currentTime + "</br>"
 	htmlData += "<a href=\"/post\">切换到Post State</a></br>"
 	htmlData += "<a href=\"/node\">切换到Node State</a></br>"
 

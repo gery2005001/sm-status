@@ -16,6 +16,8 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+var RewardTotal uint64 = 0
+
 const (
 	ST_Empty            = ""  //未初始化
 	ST_Running          = "R" //运行中未同步
@@ -362,6 +364,7 @@ func (x *Node) getEventsStreams() error {
 	}
 
 	x.cleanEligibilities()
+	RewardTotal = 0
 
 	nEvent := &pb.Event{}
 	for {
@@ -387,6 +390,7 @@ func (x *Node) getEventsStreams() error {
 							if err != nil {
 								log.Printf("Layer %d not found reward for smesher %x \n", elg.Layer, sm.SmesherId)
 							}
+							RewardTotal += total
 						}
 						x.PostInfo[i].Eligs = append(x.PostInfo[i].Eligs, SmEligs{
 							Time:  nEvent.Timestamp.AsTime(),
