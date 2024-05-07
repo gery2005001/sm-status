@@ -63,11 +63,11 @@ func getNodeStatusTableHTML() string {
 		reward = float64(RewardTotal) / 1000000000
 	}
 	htmlData += fmt.Sprintf("<b>Reward Total: </b> %.4f smh<br />", reward)
-	htmlData += fmt.Sprintf("<b>Latest version: </b>%s</br>", config.LatestVer)
+	htmlData += fmt.Sprintf("<b>Latest version: </b>%s<br />", config.LatestVer)
 	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
-	htmlData += "<b>Update Time: </b>" + currentTime + "</br>"
-	htmlData += "<a href=\"/post\">切换到Post State</a></br>"
-	htmlData += "<a href=\"/chunk\">切换到Chunks</a></br>"
+	htmlData += "<b>Update Time: </b>" + currentTime + "<br />"
+	htmlData += "<a href=\"/post\"  class=\"link-button\">切换到Post State</a>"
+	htmlData += "<a href=\"/chunk\"  class=\"link-button\">切换到Chunks</a><br />"
 
 	return htmlData
 }

@@ -152,9 +152,9 @@ func GetChunksTableHTML() string {
 		for n, chunk := range allChunks {
 			if chunk.Layer == SmNetworkInfo.Layer.Number {
 				over = true
-				allChunks[n].Desc = time.Now().Format("2006-01-02") + "<br />" + time.Now().Format("15:04:05")
+				// allChunks[n].Desc = time.Now().Format("2006-01-02") + "<br />" + time.Now().Format("15:04:05")
 				allChunks[n].Type = 0
-				allChunks[n].Name += "【Now】"
+				// allChunks[n].Name += "【Now】"
 			}
 		}
 		if !over {
