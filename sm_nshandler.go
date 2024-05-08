@@ -62,7 +62,7 @@ func getNodeStatusTableHTML() string {
 	if RewardTotal > 0 {
 		reward = float64(RewardTotal) / 1000000000
 	}
-	htmlData += "<div class=\"info-box\""
+	htmlData += "<div class=\"info-box\">"
 	htmlData += fmt.Sprintf("<b>Reward Total: </b> %.4f smh<br />", reward)
 	htmlData += fmt.Sprintf("<b>Latest version: </b>%s<br />", config.LatestVer)
 	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
