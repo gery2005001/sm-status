@@ -171,18 +171,27 @@ func GetChunksTableHTML() string {
 			return allChunks[i].Layer < allChunks[j].Layer
 		})
 
-		htmlData := "<table class=\"block-table\">"
-		for i := 0; i < len(allChunks); i += 8 {
-			htmlData += "<tr>"
-			for j := i; j < i+8 && j < len(allChunks); j++ {
-				class := GetBlockColorClass(allChunks[j].Type)
-				htmlData += fmt.Sprintf("<td class=\"td-chunk %s\">", class)
-				htmlData += fmt.Sprintf("<b>%d</b><br />%s<br />%s", allChunks[j].Layer, allChunks[j].Name, allChunks[j].Desc)
-				htmlData += "</td>"
-			}
-			htmlData += "</tr>"
+		//htmlData := "<table class=\"block-table\">"
+		// for i := 0; i < len(allChunks); i += 8 {
+		// 	htmlData += "<tr>"
+		// 	for j := i; j < i+8 && j < len(allChunks); j++ {
+		// 		class := GetBlockColorClass(allChunks[j].Type)
+		// 		htmlData += fmt.Sprintf("<td class=\"td-chunk %s\">", class)
+		// 		htmlData += fmt.Sprintf("<b>%d</b><br />%s<br />%s", allChunks[j].Layer, allChunks[j].Name, allChunks[j].Desc)
+		// 		htmlData += "</td>"
+		// 	}
+		// 	htmlData += "</tr>"
+		// }
+		// htmlData += "</table>"
+		htmlData := "<div class=\"chunks-container\">"
+		for i := 0; i < len(allChunks); i++ {
+			class := GetBlockColorClass(allChunks[i].Type)
+			htmlData += fmt.Sprintf("<div class=\"chunks-block %s\">", class)
+			htmlData += fmt.Sprintf("<b>%d</b><br />%s<br />%s", allChunks[i].Layer, allChunks[i].Name, allChunks[i].Desc)
+			htmlData += "</div>"
 		}
-		htmlData += "</table>"
+		htmlData += "</div>"
+
 		return htmlData
 	}
 	return ""
