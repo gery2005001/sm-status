@@ -18,7 +18,6 @@ import (
 
 var RewardTotal uint64 = 0
 var UnitTotal uint32 = 0
-var SizeTotal string
 
 const (
 	ST_Empty            = ""  //未初始化
