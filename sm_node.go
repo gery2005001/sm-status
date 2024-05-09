@@ -246,6 +246,7 @@ func (x *Node) getNodePostPublicKeys() error {
 					atx := atxs.Data[len(atxs.Data)-1]
 					nums = atx.NumUnits
 					size = utility.UnitsToTB(atx.NumUnits)
+					UnitTotal += atx.NumUnits
 				}
 			} else {
 				log.Println(err)
@@ -365,7 +366,6 @@ func (x *Node) getEventsStreams() error {
 	}
 
 	x.cleanEligibilities()
-	RewardTotal = 0
 
 	nEvent := &pb.Event{}
 	for {
@@ -506,7 +506,6 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 			sizeStr := "-"
 			if x.PostInfo[i].NumUnits > 0 {
 				unitsStr = fmt.Sprintf("%d", x.PostInfo[i].NumUnits)
-				UnitTotal += x.PostInfo[i].NumUnits
 			}
 			if x.PostInfo[i].Capacity != "" {
 				sizeStr = x.PostInfo[i].Capacity

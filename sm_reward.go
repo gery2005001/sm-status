@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// 从Node的GRPC服务中获取指定Node的version和status
+// 从Node的GRPC服务中获取指定Layer中Smesher的Reward
 func (x *Node) GetLayerRewardWithSmesher(l uint32, s []byte) (uint64, error) {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 

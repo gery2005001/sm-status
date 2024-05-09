@@ -94,7 +94,11 @@ func (x *SmConfig) refreshNodeStatus() {
 
 	x.Updated = false
 
+	//Units统计清零
 	UnitTotal = 0
+	//获取的奖励清零
+	RewardTotal = 0
+
 	//获取最新的客户端版本
 	x.getLatestNodeVersion()
 
@@ -104,10 +108,6 @@ func (x *SmConfig) refreshNodeStatus() {
 	if err := g.Wait(); err != nil {
 		log.Println("get network infomation error!")
 	}
-	// err := GetNetworkInfo()
-	// if err != nil {
-	// 	log.Println("get network infomation error!")
-	// }
 
 	var w sync.WaitGroup
 	c := make(chan string)
