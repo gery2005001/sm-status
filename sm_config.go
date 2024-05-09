@@ -94,6 +94,7 @@ func (x *SmConfig) refreshNodeStatus() {
 
 	x.Updated = false
 
+	UnitTotal = 0
 	//获取最新的客户端版本
 	x.getLatestNodeVersion()
 

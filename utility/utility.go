@@ -32,6 +32,9 @@ func DurationToTimeFormat(d time.Duration) string {
 
 // 返回units的TB
 func UnitsToTB(units uint32) string {
+	if units <= 0 {
+		return "0 TB"
+	}
 	result := float64(units * 64 * 1024)
 
 	tb := result / (1024 * 1024)

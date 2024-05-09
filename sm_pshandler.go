@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sm-status/utility"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -105,7 +106,7 @@ func getPostStatusTableHTML() string {
 		reward = float64(RewardTotal) / 1000000000
 	}
 	htmlData += "<div class=\"info-box\">"
-	htmlData += fmt.Sprintf("<b>Total: </b> Units %d, Size  %s, Reward %.4f smh <br />", UnitTotal, SizeTotal, reward)
+	htmlData += fmt.Sprintf("<b>Total: </b> Units %d, Size  %s, Reward %.4f smh <br />", UnitTotal, utility.UnitsToTB(UnitTotal), reward)
 	htmlData += fmt.Sprintf("<b>Latest version: </b>%s<br />", config.LatestVer)
 	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
 	htmlData += "<b>Update Time: </b>" + currentTime + "<br /><br />"

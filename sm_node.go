@@ -445,8 +445,6 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	if x.HasNewVer {
 		verSTColor = ST_Failed_CSS
 	}
-	UnitTotal = 0
-	SizeTotal = ""
 	//生成页面
 	htmlData := "<table>"
 	htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
@@ -521,7 +519,6 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 
 	htmlData += "</table>"
 
-	SizeTotal = utility.UnitsToTB(UnitTotal)
 	return htmlData
 }
 
