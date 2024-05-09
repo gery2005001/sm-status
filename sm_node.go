@@ -17,6 +17,8 @@ import (
 )
 
 var RewardTotal uint64 = 0
+var UnitTotal uint32 = 0
+var SizeTotal string
 
 const (
 	ST_Empty            = ""  //未初始化
@@ -443,6 +445,8 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	if x.HasNewVer {
 		verSTColor = ST_Failed_CSS
 	}
+	UnitTotal = 0
+	SizeTotal = ""
 	//生成页面
 	htmlData := "<table>"
 	htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
@@ -505,6 +509,7 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 			sizeStr := "-"
 			if x.PostInfo[i].NumUnits > 0 {
 				unitsStr = fmt.Sprintf("%d", x.PostInfo[i].NumUnits)
+				UnitTotal += x.PostInfo[i].NumUnits
 			}
 			if x.PostInfo[i].Capacity != "" {
 				sizeStr = x.PostInfo[i].Capacity
@@ -515,6 +520,8 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	}
 
 	htmlData += "</table>"
+
+	SizeTotal = utility.UnitsToTB(UnitTotal)
 	return htmlData
 }
 
