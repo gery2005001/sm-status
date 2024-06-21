@@ -53,6 +53,8 @@ func (x *Node) GetLayerRewardWithSmesher(l uint32, s []byte) (uint64, error) {
 			log.Printf("layer: %d,reward: %d,smesher: %x \n", event.GetV1().Layer, event.GetV1().Total, event.GetV1().Smesher)
 			return event.GetV1().Total, nil
 		}
+		//log.Println(event.GetV1().GetSmesher())
+
 	}
 	return 0, fmt.Errorf("reward not found")
 }

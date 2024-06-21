@@ -4,6 +4,7 @@
   "interval": 30,
   "timeout": 3,
   "reload": true,
+  "reward": false,
   "node": [
     {
       "name": "Node-12100T",

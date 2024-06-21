@@ -18,6 +18,7 @@ type SmConfig struct {
 	Interval   time.Duration `json:"interval"`
 	Timeout    time.Duration `json:"timeout"`
 	Reload     bool          `json:"reload"`
+	Reward     bool          `json:"reward"`
 	Node       []Node        `json:"node"`
 	LatestVer  string
 	Ready      bool

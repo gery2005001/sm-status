@@ -337,6 +337,9 @@ func (x *Node) getEventsStreams() error {
 		log.Println("node is smapp skip get events stream")
 		return nil
 	}
+
+	config := GetConfig()
+
 	timeout := GetTimeout()
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPrivateListener)
 
@@ -386,13 +389,16 @@ func (x *Node) getEventsStreams() error {
 					tmElgs := nEvent.GetEligibilities()
 					for _, elg := range tmElgs.Eligibilities {
 						var total = uint64(0)
-						if elg.Layer < SmNetworkInfo.Layer.Number && elg.Layer >= SmNetworkInfo.Epoch.LayerStart {
-							total, err = x.GetLayerRewardWithSmesher(elg.Layer, sm.SmesherId)
-							if err != nil {
-								log.Printf("Layer %d not found reward for smesher %x \n", elg.Layer, sm.SmesherId)
+						if config.Reward {
+							if elg.Layer < SmNetworkInfo.Layer.Number && elg.Layer >= SmNetworkInfo.Epoch.LayerStart {
+								total, err = x.GetLayerRewardWithSmesher(elg.Layer, sm.SmesherId)
+								if err != nil {
+									log.Printf("Layer %d not found reward for smesher %x \n", elg.Layer, sm.SmesherId)
+								}
+								RewardTotal += total
 							}
-							RewardTotal += total
 						}
+
 						x.PostInfo[i].Eligs = append(x.PostInfo[i].Eligs, SmEligs{
 							Time:  nEvent.Timestamp.AsTime(),
 							Epoch: nEvent.GetEligibilities().GetEpoch(),
