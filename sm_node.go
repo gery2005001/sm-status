@@ -393,7 +393,8 @@ func (x *Node) getEventsStreams() error {
 							if elg.Layer < SmNetworkInfo.Layer.Number && elg.Layer >= SmNetworkInfo.Epoch.LayerStart {
 								total, err = x.GetLayerRewardWithSmesher(elg.Layer, sm.SmesherId)
 								if err != nil {
-									log.Printf("Layer %d not found reward for smesher %x \n", elg.Layer, sm.SmesherId)
+									log.Printf("Get reward from layer %d error: %s \n", elg.Layer, err.Error())
+									//log.Printf("Layer %d not found reward for smesher %x \n", elg.Layer, sm.SmesherId)
 								}
 								RewardTotal += total
 							}
