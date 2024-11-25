@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"sm-status/utility"
 	"sort"
 	"time"
@@ -23,7 +21,9 @@ const (
 
 var BlockClass = []string{"block-now", "block-start-end", "block-running", "block-elgs"}
 
-var SmNetworkInfo NetworkInfo = NetworkInfo{}
+var SmNetworkInfo NetworkInfo = NetworkInfo{
+	UpdateInterval: 300,
+}
 
 type Statistics struct {
 	Capacity      int64 `json:"capacity" bson:"capacity"`         // Average tx/s rate over capacity considering all layers in the current epoch.
@@ -85,55 +85,61 @@ type Layer struct {
 }
 
 type NetworkInfo struct {
-	Epoch Epoch `json:"epoch"`
-	Layer Layer `json:"layer"`
+	Epoch        Epoch `json:"epoch"`
+	Layer        Layer `json:"layer"`
+	CurrenEpoch  uint32
+	CurrentLayer uint32
+	//更新时间
+	UpdateTime     time.Time
+	UpdateInterval time.Duration
 }
 
 // 从网络获取Epoch信息
-func GetNetworkInfo() error {
-	log.Println("start get network info...")
-	client := &http.Client{
-		Timeout: GetTimeout() * time.Second,
-	}
+// func GetNetworkInfo() error {
+// 	log.Println("start get network info...")
+// 	client := &http.Client{
+// 		Timeout: GetTimeout() * time.Second,
+// 	}
 
-	resp, err := client.Get(GetNetworkInfoUrl)
-	if err != nil {
-		log.Println("get epoch infomation failed: ", err)
-		return err
-	}
-	if resp != nil {
-		defer resp.Body.Close()
-	}
+// 	resp, err := client.Get(GetNetworkInfoUrl)
+// 	if err != nil {
+// 		log.Println("get epoch infomation failed: ", err)
+// 		return err
+// 	}
+// 	if resp != nil {
+// 		defer resp.Body.Close()
+// 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&SmNetworkInfo); err != nil {
-		log.Println("decode epoch Json information failed: ", err)
-		return err
-	}
-	log.Println("successfully get current epoch")
+// 	if err := json.NewDecoder(resp.Body).Decode(&SmNetworkInfo); err != nil {
+// 		log.Println("decode epoch Json information failed: ", err)
+// 		return err
+// 	}
+// 	log.Println("successfully get current epoch")
 
-	//Gap 12H开始和结束的Layer
-	SmNetworkInfo.Epoch.Gap12H.LayerStart = SmNetworkInfo.Epoch.LayerStart + Gap12HLayers
-	SmNetworkInfo.Epoch.Gap12H.LayerEnd = SmNetworkInfo.Epoch.Gap12H.LayerStart + T12HLayers
-	SmNetworkInfo.Epoch.Gap12H.Layers = T12HLayers
-	//Gap 12H开始和结束的时间
-	SmNetworkInfo.Epoch.Gap12H.Start = LayerDuration*Gap12HLayers + SmNetworkInfo.Epoch.Start
-	SmNetworkInfo.Epoch.Gap12H.End = SmNetworkInfo.Epoch.Gap12H.Start + T12HDuration
+// 	//Gap 12H开始和结束的Layer
+// 	SmNetworkInfo.Epoch.Gap12H.LayerStart = SmNetworkInfo.Epoch.LayerStart + Gap12HLayers
+// 	SmNetworkInfo.Epoch.Gap12H.LayerEnd = SmNetworkInfo.Epoch.Gap12H.LayerStart + T12HLayers
+// 	SmNetworkInfo.Epoch.Gap12H.Layers = T12HLayers
+// 	//Gap 12H开始和结束的时间
+// 	SmNetworkInfo.Epoch.Gap12H.Start = LayerDuration*Gap12HLayers + SmNetworkInfo.Epoch.Start
+// 	SmNetworkInfo.Epoch.Gap12H.End = SmNetworkInfo.Epoch.Gap12H.Start + T12HDuration
 
-	//Gap 24L开始和结束的Layer
-	SmNetworkInfo.Epoch.Gap24L.LayerStart = SmNetworkInfo.Epoch.Gap12H.LayerEnd + T24HLayers
-	SmNetworkInfo.Epoch.Gap24L.LayerEnd = SmNetworkInfo.Epoch.Gap24L.LayerStart + T24HLayers
-	SmNetworkInfo.Epoch.Gap24L.Layers = T24HLayers
-	//Gap 24L开始和结束的时间
-	SmNetworkInfo.Epoch.Gap24L.Start = SmNetworkInfo.Epoch.Gap12H.End + T24HDuration
-	SmNetworkInfo.Epoch.Gap24L.End = SmNetworkInfo.Epoch.Gap24L.Start + T12HDuration
+// 	//Gap 24L开始和结束的Layer
+// 	SmNetworkInfo.Epoch.Gap24L.LayerStart = SmNetworkInfo.Epoch.Gap12H.LayerEnd + T24HLayers
+// 	SmNetworkInfo.Epoch.Gap24L.LayerEnd = SmNetworkInfo.Epoch.Gap24L.LayerStart + T24HLayers
+// 	SmNetworkInfo.Epoch.Gap24L.Layers = T24HLayers
+// 	//Gap 24L开始和结束的时间
+// 	SmNetworkInfo.Epoch.Gap24L.Start = SmNetworkInfo.Epoch.Gap12H.End + T24HDuration
+// 	SmNetworkInfo.Epoch.Gap24L.End = SmNetworkInfo.Epoch.Gap24L.Start + T12HDuration
 
-	return nil
-}
+// 	return nil
+// }
 
 func (x *NetworkInfo) GetHtmlString() string {
-	if x.Epoch.Number == 0 {
+	if x.CurrenEpoch <= 0 || x.CurrentLayer <= 0 {
 		return ""
 	}
+	log.Printf("x.GetHtmlString: current epoch is %d, current layer is %d \n", x.CurrenEpoch, x.CurrentLayer)
 	type Layers struct {
 		Name  string
 		Desc  string
@@ -145,7 +151,7 @@ func (x *NetworkInfo) GetHtmlString() string {
 	layerTimes := []Layers{}
 
 	layerTimes = append(layerTimes, Layers{
-		Name:  fmt.Sprintf("Epoch %d", x.Epoch.Number),
+		Name:  fmt.Sprintf("Epoch %d", x.CurrenEpoch),
 		Desc:  "",
 		Time:  0,
 		Layer: x.Epoch.LayerStart,
@@ -189,12 +195,13 @@ func (x *NetworkInfo) GetHtmlString() string {
 
 	over := false
 	for n, layer := range layerTimes {
-		if layer.Layer == x.Layer.Number {
+		if layer.Layer == x.CurrentLayer {
 			over = true
 			layerTimes[n].Desc = time.Now().Format("2006-01-02 15:04:05")
 			layerTimes[n].Type = 0
 		} else {
-			incLayer := int64(layer.Layer) - int64(x.Layer.Number)
+			incLayer := int64(layer.Layer) - int64(x.CurrentLayer)
+
 			layerTimes[n].Time = time.Duration(incLayer*LayerDuration) * time.Second
 			layerTimes[n].Desc = utility.DurationToTimeFormat(layerTimes[n].Time)
 		}
@@ -204,7 +211,7 @@ func (x *NetworkInfo) GetHtmlString() string {
 			Name:  "Now",
 			Desc:  time.Now().Format("2006-01-02 15:04:05"),
 			Time:  0,
-			Layer: x.Layer.Number,
+			Layer: x.CurrentLayer,
 			Type:  0,
 		})
 	}
@@ -233,4 +240,64 @@ func GetBlockColorClass(n int) string {
 	} else {
 		return ""
 	}
+}
+
+func (x *NetworkInfo) IsUpdated() bool {
+	return x.UpdateTime.Add(x.UpdateInterval * time.Second).Before(time.Now())
+}
+
+// 设置当前的Layer
+func (x *NetworkInfo) SetLayer(currLayer uint32) error {
+	x.CurrentLayer = currLayer
+	log.Printf("successfully set current layer to %d\n", currLayer)
+
+	return nil
+}
+
+// 设置当前的Epoch
+func (x *NetworkInfo) SetEpoch(currEpoch uint32) error {
+	// client := &http.Client{
+	// 	Timeout: GetTimeout() * time.Second,
+	// }
+
+	// resp, err := client.Get(GetNetworkInfoUrl)
+	// if err != nil {
+	// 	log.Println("get epoch infomation failed: ", err)
+	// 	return err
+	// }
+	// if resp != nil {
+	// 	defer resp.Body.Close()
+	// }
+
+	// if err := json.NewDecoder(resp.Body).Decode(&SmNetworkInfo); err != nil {
+	// 	log.Println("decode epoch Json information failed: ", err)
+	// 	return err
+	// }
+	// log.Println("successfully get current epoch")
+	x.CurrenEpoch = currEpoch
+	x.Epoch.Number = int32(currEpoch)
+	x.Epoch.Layers = EpochLayers
+	x.Epoch.LayerStart = currEpoch*EpochLayers + 1
+	x.Epoch.LayerEnd = (currEpoch + 1) * EpochLayers
+
+	//Gap 12H开始和结束的Layer
+	x.Epoch.Gap12H.LayerStart = x.Epoch.LayerStart + Gap12HLayers
+	x.Epoch.Gap12H.LayerEnd = x.Epoch.Gap12H.LayerStart + T12HLayers
+	x.Epoch.Gap12H.Layers = T12HLayers
+	// //Gap 12H开始和结束的时间
+	x.Epoch.Gap12H.Start = LayerDuration*Gap12HLayers + x.Epoch.Start
+	x.Epoch.Gap12H.End = x.Epoch.Gap12H.Start + T12HDuration
+
+	//Gap 24L开始和结束的Layer
+	x.Epoch.Gap24L.LayerStart = x.Epoch.Gap12H.LayerEnd + T24HLayers
+	x.Epoch.Gap24L.LayerEnd = x.Epoch.Gap24L.LayerStart + T24HLayers
+	x.Epoch.Gap24L.Layers = T24HLayers
+	//Gap 24L开始和结束的时间
+	x.Epoch.Gap24L.Start = x.Epoch.Gap12H.End + T24HDuration
+	x.Epoch.Gap24L.End = x.Epoch.Gap24L.Start + T12HDuration
+
+	x.UpdateTime = time.Now()
+	log.Printf("successfully set current epoch to %d\n", currEpoch)
+
+	return nil
 }

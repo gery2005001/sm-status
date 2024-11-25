@@ -66,7 +66,7 @@
         },
         {
           "enable": true,
-          "title": "57168",
+          "title": "AB4AA",
           "capacity": "0.89GB",
           "operator-address": "http://192.168.31.220:50058/status"
         },
@@ -96,7 +96,7 @@
         },
         {
           "enable": true,
-          "title": "AB4AA",
+          "title": "57168",
           "capacity": "2.50TB",
           "operator-address": "http://192.168.31.210:50051/status"
         },

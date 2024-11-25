@@ -8,8 +8,6 @@ import (
 	"os"
 	"sync"
 	"time"
-
-	"golang.org/x/sync/errgroup"
 )
 
 type SmConfig struct {
@@ -67,10 +65,10 @@ func LoadConfig() error {
 
 	appConfig.Ready = true
 
-	err = GetNetworkInfo()
-	if err != nil {
-		log.Println("get network infomation error!")
-	}
+	// err = GetNetworkInfo()
+	// if err != nil {
+	// 	log.Println("get network infomation error!")
+	// }
 
 	log.Println("load config successfully")
 	return nil
@@ -104,11 +102,11 @@ func (x *SmConfig) refreshNodeStatus() {
 	x.getLatestNodeVersion()
 
 	//获取NetworkInfo
-	g := new(errgroup.Group)
-	g.Go(GetNetworkInfo)
-	if err := g.Wait(); err != nil {
-		log.Println("get network infomation error!")
-	}
+	// g := new(errgroup.Group)
+	// g.Go(GetNetworkInfo)
+	// if err := g.Wait(); err != nil {
+	// 	log.Println("get network infomation error!")
+	// }
 
 	var w sync.WaitGroup
 	c := make(chan string)
@@ -117,6 +115,8 @@ func (x *SmConfig) refreshNodeStatus() {
 	for n := range x.Node {
 		w.Add(1)
 		go x.Node[n].GetNodeAllInformation(&w, c)
+	}
+	for n := range x.Node {
 		w.Add(1)
 		go x.Node[n].fetchNodePostOperatorStatus(&w, c)
 	}

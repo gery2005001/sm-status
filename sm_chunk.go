@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"sm-status/utility"
 	"sort"
 	"time"
@@ -23,12 +24,12 @@ const MAXCOLUMN = 8
 
 func GetTimeStreamChunks() []Chunk {
 	TsChunks := []Chunk{}
-	if SmNetworkInfo.Epoch.Number <= 0 {
+	if SmNetworkInfo.CurrenEpoch <= 0 || SmNetworkInfo.CurrentLayer <= 0 {
 		return TsChunks
 	}
 
 	//添加Epoch开始Layer块
-	whenLayer := int(SmNetworkInfo.Epoch.LayerStart) - int(SmNetworkInfo.Layer.Number)
+	whenLayer := int64(SmNetworkInfo.Epoch.LayerStart) - int64(SmNetworkInfo.CurrentLayer)
 	whenDuration := time.Duration(whenLayer * LayerDuration)
 	TsChunks = append(TsChunks, Chunk{
 		Name:  fmt.Sprintf("Epoch %d", SmNetworkInfo.Epoch.Number),
@@ -39,7 +40,7 @@ func GetTimeStreamChunks() []Chunk {
 	})
 	//下个epoch开始的layer
 	nextEpochLayerStart := SmNetworkInfo.Epoch.LayerEnd + 1
-	whenLayer = int(nextEpochLayerStart) - int(SmNetworkInfo.Layer.Number)
+	whenLayer = int64(nextEpochLayerStart) - int64(SmNetworkInfo.CurrentLayer)
 	whenDuration = time.Duration(whenLayer * LayerDuration)
 	TsChunks = append(TsChunks, Chunk{
 		Name:  fmt.Sprintf("Epoch %d", SmNetworkInfo.Epoch.Number+1),
@@ -50,7 +51,7 @@ func GetTimeStreamChunks() []Chunk {
 	})
 
 	//开始Gap 12H的Layer
-	whenLayer = int(SmNetworkInfo.Epoch.Gap12H.LayerStart) - int(SmNetworkInfo.Layer.Number)
+	whenLayer = int64(SmNetworkInfo.Epoch.Gap12H.LayerStart) - int64(SmNetworkInfo.CurrentLayer)
 	whenDuration = time.Duration(whenLayer * LayerDuration)
 	TsChunks = append(TsChunks, Chunk{
 		Name:  "12H Begin",
@@ -60,7 +61,7 @@ func GetTimeStreamChunks() []Chunk {
 		Type:  2,
 	})
 	//结束Gap 12H的Layer
-	whenLayer = int(SmNetworkInfo.Epoch.Gap12H.LayerEnd) - int(SmNetworkInfo.Layer.Number)
+	whenLayer = int64(SmNetworkInfo.Epoch.Gap12H.LayerEnd) - int64(SmNetworkInfo.CurrentLayer)
 	whenDuration = time.Duration(whenLayer * LayerDuration)
 	TsChunks = append(TsChunks, Chunk{
 		Name:  "12H End",
@@ -70,7 +71,7 @@ func GetTimeStreamChunks() []Chunk {
 		Type:  2,
 	})
 	//开始Gap 24L的Layer
-	whenLayer = int(SmNetworkInfo.Epoch.Gap24L.LayerStart) - int(SmNetworkInfo.Layer.Number)
+	whenLayer = int64(SmNetworkInfo.Epoch.Gap24L.LayerStart) - int64(SmNetworkInfo.CurrentLayer)
 	whenDuration = time.Duration(whenLayer * LayerDuration)
 	TsChunks = append(TsChunks, Chunk{
 		Name:  "24L Begin",
@@ -80,7 +81,7 @@ func GetTimeStreamChunks() []Chunk {
 		Type:  2,
 	})
 	//结束Gap 12H的Layer
-	whenLayer = int(SmNetworkInfo.Epoch.Gap24L.LayerEnd) - int(SmNetworkInfo.Layer.Number)
+	whenLayer = int64(SmNetworkInfo.Epoch.Gap24L.LayerEnd) - int64(SmNetworkInfo.CurrentLayer)
 	whenDuration = time.Duration(whenLayer * LayerDuration)
 	TsChunks = append(TsChunks, Chunk{
 		Name:  "24L End",
@@ -102,7 +103,7 @@ func GetElgChunks() []Chunk {
 				if len(post.Eligs) > 0 {
 					for k, elg := range config.Node[i].PostInfo[j].Eligs {
 						if elg.Epoch == uint32(SmNetworkInfo.Epoch.Number) {
-							whenLayer := int(elg.Layer) - int(SmNetworkInfo.Layer.Number)
+							whenLayer := int64(elg.Layer) - int64(SmNetworkInfo.CurrentLayer)
 							whenDuration := time.Duration(whenLayer * LayerDuration)
 							name := config.Node[i].Name + "<br />" + config.Node[i].PostInfo[j].Title
 							nameTag := "【✓】"
@@ -135,6 +136,7 @@ func GetElgChunks() []Chunk {
 }
 
 func GetChunksTableHTML() string {
+	log.Printf("Current Epoch is: %d,Current Layer is: %d", SmNetworkInfo.CurrenEpoch, SmNetworkInfo.CurrentLayer)
 	tc := GetTimeStreamChunks()
 	ec := GetElgChunks()
 
@@ -150,11 +152,9 @@ func GetChunksTableHTML() string {
 	if len(allChunks) > 0 {
 		over := false
 		for n, chunk := range allChunks {
-			if chunk.Layer == SmNetworkInfo.Layer.Number {
+			if chunk.Layer == SmNetworkInfo.CurrentLayer {
 				over = true
-				// allChunks[n].Desc = time.Now().Format("2006-01-02") + "<br />" + time.Now().Format("15:04:05")
 				allChunks[n].Type = 0
-				// allChunks[n].Name += "【Now】"
 			}
 		}
 		if !over {
@@ -162,7 +162,7 @@ func GetChunksTableHTML() string {
 				Name:  "【Now】",
 				Desc:  time.Now().Format("2006-01-02") + "<br />" + time.Now().Format("15:04:05"),
 				When:  0,
-				Layer: SmNetworkInfo.Layer.Number,
+				Layer: SmNetworkInfo.CurrentLayer,
 				Type:  0,
 			})
 		}
@@ -171,18 +171,6 @@ func GetChunksTableHTML() string {
 			return allChunks[i].Layer < allChunks[j].Layer
 		})
 
-		//htmlData := "<table class=\"block-table\">"
-		// for i := 0; i < len(allChunks); i += 8 {
-		// 	htmlData += "<tr>"
-		// 	for j := i; j < i+8 && j < len(allChunks); j++ {
-		// 		class := GetBlockColorClass(allChunks[j].Type)
-		// 		htmlData += fmt.Sprintf("<td class=\"td-chunk %s\">", class)
-		// 		htmlData += fmt.Sprintf("<b>%d</b><br />%s<br />%s", allChunks[j].Layer, allChunks[j].Name, allChunks[j].Desc)
-		// 		htmlData += "</td>"
-		// 	}
-		// 	htmlData += "</tr>"
-		// }
-		// htmlData += "</table>"
 		htmlData := "<div class=\"chunks-container\">"
 		for i := 0; i < len(allChunks); i++ {
 			class := GetBlockColorClass(allChunks[i].Type)

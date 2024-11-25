@@ -99,7 +99,7 @@ func (x *Node) setAnPrivateNode() {
 	x.PostInfo = append(x.PostInfo, alonePost)
 }
 
-// 从node获取当前Epoch，用以判断node是否开启
+// 从node获取当前Epoch，用以判断node是否开启,同时检查SmNetworkInfo是不需要更新(如更新时间超过UpdateInterval则更新)
 func (x *Node) getCurrentEpoch() error {
 	if !x.Enable {
 		return fmt.Errorf("node %s ip %s is disabled", x.Name, x.IP)
@@ -134,6 +134,9 @@ func (x *Node) getCurrentEpoch() error {
 
 	x.Status = ST_Running
 	log.Println("successfully get node current epoch from ", grpcAddr)
+
+	SmNetworkInfo.SetEpoch(resEpoch.Epochnum.Number)
+
 	return nil
 }
 
@@ -196,6 +199,9 @@ func (x *Node) getNodeVerAndStatus() error {
 	x.VLayer = resStatus.Status.VerifiedLayer.Number
 
 	log.Println("successfully get node version and status from ", grpcAddr)
+
+	SmNetworkInfo.SetLayer(resStatus.Status.TopLayer.Number)
+
 	return nil
 }
 
@@ -236,27 +242,27 @@ func (x *Node) getNodePostPublicKeys() error {
 	if len(response.PublicKeys) > 0 {
 		for i := 0; i < len(response.PublicKeys); i++ {
 			//通过id查询atx记录，获取numunits和size
-			smId := fmt.Sprintf("0x%x", response.PublicKeys[i])
+			// smId := fmt.Sprintf("0x%x", response.PublicKeys[i])
 			//log.Println("fond smersher id:", smId)
-			size := ""
-			nums := uint32(0)
-			atxs, err := GetActivations(smId)
-			if err == nil {
-				if len(atxs.Data) > 0 {
-					atx := atxs.Data[len(atxs.Data)-1]
-					nums = atx.NumUnits
-					size = utility.UnitsToTB(atx.NumUnits)
-					UnitTotal += atx.NumUnits
-				}
-			} else {
-				log.Println(err)
-			}
+			// size := ""
+			// nums := uint32(0)
+			// atxs, err := GetActivations(smId)
+			// if err == nil {
+			// 	if len(atxs.Data) > 0 {
+			// 		atx := atxs.Data[len(atxs.Data)-1]
+			// 		nums = atx.NumUnits
+			// 		size = utility.UnitsToTB(atx.NumUnits)
+			// 		UnitTotal += atx.NumUnits
+			// 	}
+			// } else {
+			// 	log.Println(err)
+			// }
 			newKey := true
 			if len(x.PostInfo) > 0 {
 				for j := 0; j < len(x.PostInfo); j++ {
 					if bytes.Equal(x.PostInfo[j].SmesherId, response.PublicKeys[i]) {
-						x.PostInfo[j].Capacity = size
-						x.PostInfo[j].NumUnits = nums
+						// x.PostInfo[j].Capacity = size
+						// x.PostInfo[j].NumUnits = nums
 						newKey = false
 						break
 					}
@@ -264,15 +270,15 @@ func (x *Node) getNodePostPublicKeys() error {
 				if newKey {
 					x.PostInfo = append(x.PostInfo, Post{
 						SmesherId: response.PublicKeys[i],
-						Capacity:  size,
-						NumUnits:  nums,
+						// Capacity:  size,
+						// NumUnits:  nums,
 					})
 				}
 			} else {
 				x.PostInfo = append(x.PostInfo, Post{
 					SmesherId: response.PublicKeys[i],
-					Capacity:  size,
-					NumUnits:  nums,
+					// Capacity:  size,
+					// NumUnits:  nums,
 				})
 			}
 		}
