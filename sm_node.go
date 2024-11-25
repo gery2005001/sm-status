@@ -396,7 +396,7 @@ func (x *Node) getEventsStreams() error {
 					for _, elg := range tmElgs.Eligibilities {
 						var total = uint64(0)
 						if config.Reward {
-							if elg.Layer < SmNetworkInfo.Layer.Number && elg.Layer >= SmNetworkInfo.Epoch.LayerStart {
+							if elg.Layer < SmNetworkInfo.CurrentLayer && elg.Layer >= SmNetworkInfo.Epoch.LayerStart {
 								total, err = x.GetLayerRewardWithSmesher(elg.Layer, sm.SmesherId)
 								if err != nil {
 									log.Printf("Get reward from layer %d error: %s \n", elg.Layer, err.Error())
