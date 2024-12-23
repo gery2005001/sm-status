@@ -8,13 +8,8 @@ import (
 	"sm-status/version"
 	"time"
 
-	"github.com/gorilla/websocket"
 	"github.com/urfave/cli/v2"
 )
-
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool { return true },
-}
 
 var flags = []cli.Flag{
 	&cli.StringFlag{
@@ -65,9 +60,6 @@ func main() {
 		http.HandleFunc("/post", postStatusHandler)
 		http.HandleFunc("/node", nodeStatusHandler)
 		http.HandleFunc("/chunk", chunkStatusHandler)
-		//http.HandleFunc("/ps", postStatusWebSocketHandler)
-		//http.HandleFunc("/ns", nodeStatusWebSocketHandler)
-		//http.HandleFunc("/cs", chunkStatusWebSocketHandler)
 
 		port := fmt.Sprintf(":%d", appConfig.Port)
 		log.Printf("Server started at port %d", appConfig.Port)

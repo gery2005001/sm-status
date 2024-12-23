@@ -1,15 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"sm-status/utility"
 )
 
 type PageData struct {
-	RefreshTime  int
-	StateContent template.HTML
+	RefreshTime   int
+	StateContent  template.HTML
+	FooterContent template.HTML
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -23,13 +26,15 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func postStatusHandler(w http.ResponseWriter, r *http.Request) {
-	// //刷新Post状态
-	htmlData := getPostStatusTableHTML()
+	// 刷新Post状态
 	refreshTime := int(appConfig.Refresh)
+	footerHtml := getFooterHtml()
+	htmlData := getPostStatusTableHTML()
 
 	data := PageData{
-		RefreshTime:  refreshTime,
-		StateContent: template.HTML(htmlData),
+		RefreshTime:   refreshTime,
+		StateContent:  template.HTML(htmlData),
+		FooterContent: template.HTML(footerHtml),
 	}
 
 	// 解析并执行 HTML 模板
@@ -48,13 +53,15 @@ func postStatusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func nodeStatusHandler(w http.ResponseWriter, r *http.Request) {
-	// //刷新Node状态
-	htmlData := getNodeStatusTableHTML()
+	// 刷新Node状态
 	refreshTime := int(appConfig.Refresh)
+	footerHtml := getFooterHtml()
+	htmlData := getNodeStatusTableHTML()
 
 	data := PageData{
-		RefreshTime:  refreshTime,
-		StateContent: template.HTML(htmlData),
+		RefreshTime:   refreshTime,
+		StateContent:  template.HTML(htmlData),
+		FooterContent: template.HTML(footerHtml),
 	}
 
 	// 解析并执行 HTML 模板
@@ -74,12 +81,14 @@ func nodeStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 func chunkStatusHandler(w http.ResponseWriter, r *http.Request) {
 	// //刷新Chunk状态
-	htmlData := getAllChunksTableHTML()
 	refreshTime := int(appConfig.Refresh)
+	footerHtml := getFooterHtml()
+	htmlData := GetChunksTableHTML()
 
 	data := PageData{
-		RefreshTime:  refreshTime,
-		StateContent: template.HTML(htmlData),
+		RefreshTime:   refreshTime,
+		StateContent:  template.HTML(htmlData),
+		FooterContent: template.HTML(footerHtml),
 	}
 
 	// 解析并执行 HTML 模板
@@ -95,4 +104,25 @@ func chunkStatusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "渲染模板失败", http.StatusInternalServerError)
 		return
 	}
+}
+
+func getFooterHtml() string {
+	config := GetConfig()
+	var reward float64 = 0
+	htmlData := ""
+
+	if RewardTotal > 0 {
+		reward = float64(RewardTotal) / 1000000000
+	}
+	htmlData += "<div class=\"info-box\">"
+	htmlData += fmt.Sprintf("<b>Total: </b> Units %d, Size  %s, Reward %.4f smh <br />", UnitTotal, utility.UnitsToTB(UnitTotal), reward)
+	htmlData += fmt.Sprintf("<b>Latest version: </b>%s<br />", config.LatestVer)
+	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
+	htmlData += "<b>Update Time: </b>" + currentTime + "<br /><br />"
+	htmlData += "</div>"
+	htmlData += "<a href=\"/node\"  class=\"link-button\">切换到Node State</a>"
+	htmlData += "<a href=\"/post\"  class=\"link-button\">切换到Post State</a>"
+	htmlData += "<a href=\"/chunk\"  class=\"link-button\">切换到Chunks</a><br />"
+
+	return htmlData
 }

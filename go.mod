@@ -3,7 +3,6 @@ module sm-status
 go 1.22.1
 
 require (
-	github.com/gorilla/websocket v1.5.1
 	github.com/spacemeshos/api/release/go v1.36.0
 	github.com/urfave/cli/v2 v2.27.1
 	google.golang.org/grpc v1.62.1

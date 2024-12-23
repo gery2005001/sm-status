@@ -2,51 +2,12 @@ package main
 
 import (
 	"fmt"
-	"sm-status/utility"
 )
-
-// Post Status页面处理
-// func postStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
-// 	config := GetConfig()
-
-// 	// 将 HTTP 连接升级为 WebSocket 连接
-// 	conn, err := upgrader.Upgrade(w, r, nil)
-// 	if err != nil {
-// 		log.Println("Failed to upgrade PS to WebSocket: ", err)
-// 		return
-// 	}
-// 	defer conn.Close()
-
-// 	// // 获取当前状态的HTML字符串
-// 	htmlData := getPostStatusTableHTML()
-// 	// 向客户端发送数据
-// 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-// 		log.Println("PS WebSocket Write failed:", err)
-// 	}
-// 	log.Println("PS WebSocket Write successfully")
-
-// 	// 每隔指定时间推送状态
-// 	ticker := time.NewTicker(config.Interval * time.Second)
-// 	defer ticker.Stop()
-
-// 	for range ticker.C {
-// 		htmlData = getPostStatusTableHTML()
-// 		//log.Println(htmlData)
-// 		// 向客户端发送数据
-// 		if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-// 			log.Println("PS WebSocket Write failed:", err)
-// 			return
-// 		}
-// 		log.Println("PS WebSocket Write successfully")
-// 	}
-// }
 
 // 根据config生成状态表HTML
 func getPostStatusTableHTML() string {
 	//输出Post状态表
 	config := GetConfig()
-	//config.refreshOperatorStatus()
-	//log.Println(config.toJSONString())
 
 	htmlData := SmNetworkInfo.GetHtmlString()
 
@@ -96,18 +57,5 @@ func getPostStatusTableHTML() string {
 			htmlData += "</table>"
 		}
 	}
-	var reward float64 = 0
-	if RewardTotal > 0 {
-		reward = float64(RewardTotal) / 1000000000
-	}
-	htmlData += "<div class=\"info-box\">"
-	htmlData += fmt.Sprintf("<b>Total: </b> Units %d, Size  %s, Reward %.4f smh <br />", UnitTotal, utility.UnitsToTB(UnitTotal), reward)
-	htmlData += fmt.Sprintf("<b>Latest version: </b>%s<br />", config.LatestVer)
-	currentTime := config.UpdateTime.Format("2006-01-02 15:04:05")
-	htmlData += "<b>Update Time: </b>" + currentTime + "<br /><br />"
-	htmlData += "</div>"
-	htmlData += "<a href=\"/node\"  class=\"link-button\">切换到Node State</a>"
-	htmlData += "<a href=\"/chunk\"  class=\"link-button\">切换到Chunks</a><br />"
-
 	return htmlData
 }
