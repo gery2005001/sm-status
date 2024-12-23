@@ -50,6 +50,8 @@ func postStatusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "渲染模板失败", http.StatusInternalServerError)
 		return
 	}
+
+	log.Println("post status html update complete")
 }
 
 func nodeStatusHandler(w http.ResponseWriter, r *http.Request) {
