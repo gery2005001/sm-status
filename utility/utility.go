@@ -1,8 +1,14 @@
 package utility
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"io"
 	"time"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // 将传入的分钟数转换为格式为"2d 1h 0m"的字符串
@@ -53,4 +59,53 @@ func TimeStampAddSecond(t uint32, s time.Duration) int64 {
 	newTimeStamp := newTime.Unix()
 
 	return newTimeStamp
+}
+
+// 判断grpc服务错误码
+func GetGRPCStatusCode(err error) string {
+	if err != nil {
+		// 获取错误状态码
+		st := status.Code(err)
+
+		// 判断不同类型的错误
+		switch st {
+		case codes.DeadlineExceeded:
+			// 处理超时错误
+			return "请求超时"
+		case codes.Unavailable:
+			// 处理服务不可用错误
+			return "服务不可用"
+		case codes.Internal:
+			// 处理内部错误
+			return "服务器内部错误"
+		case codes.NotFound:
+			// 处理未找到资源错误
+			return "资源未找到"
+		case codes.InvalidArgument:
+			// 处理参数错误
+			return "参数无效"
+		default:
+			// 处理其他类型错误
+			return fmt.Sprintf("其他错误: %v", err)
+		}
+	}
+
+	return "Successfully"
+}
+
+// 判断http服务错误码
+func GetHttpStatusCode(err error) string {
+	if err != nil {
+		switch {
+		case errors.Is(err, context.DeadlineExceeded):
+			return "请求超时"
+		case errors.Is(err, context.Canceled):
+			return "请求被取消"
+		case errors.Is(err, io.EOF):
+			return "连接意外关闭"
+		default:
+			return fmt.Sprintf("其他错误: %v\n", err)
+		}
+	}
+	return "Successfully"
 }

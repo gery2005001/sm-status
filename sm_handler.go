@@ -77,6 +77,8 @@ func nodeStatusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "渲染模板失败", http.StatusInternalServerError)
 		return
 	}
+
+	log.Println("node status html update complete")
 }
 
 func chunkStatusHandler(w http.ResponseWriter, r *http.Request) {
@@ -104,6 +106,8 @@ func chunkStatusHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "渲染模板失败", http.StatusInternalServerError)
 		return
 	}
+
+	log.Println("chunks status html update complete")
 }
 
 func getFooterHtml() string {

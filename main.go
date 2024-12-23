@@ -47,10 +47,13 @@ func main() {
 		defer ticker.Stop()
 		go func() {
 			for range ticker.C {
+				log.Println("Tick received")
 				//更新Config文件
 				if appConfig.Reload {
+					log.Println("Reloading config...")
 					_ = LoadConfig()
 				}
+				log.Println("Refreshing status...")
 				appConfig.refreshNodeStatus()
 			}
 		}()

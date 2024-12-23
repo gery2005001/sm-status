@@ -109,10 +109,9 @@ func (x *Node) getCurrentEpoch() error {
 	grpcAddr := fmt.Sprintf("%s:%d", x.IP, x.GrpcPublicListener)
 
 	log.Println("Starting get node current epoch from ", grpcAddr)
-	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		log.Printf("get node %s epoch at Dial error: %s\n", x.Name, err.Error())
-		return err
+		return fmt.Errorf("%s", utility.GetGRPCStatusCode(err))
 	}
 	defer conn.Close()
 
@@ -128,8 +127,9 @@ func (x *Node) getCurrentEpoch() error {
 
 	resEpoch, err := client.CurrentEpoch(ctx, &reqEpoch)
 	if err != nil {
-		log.Printf("get node %s epoch at client error: %s\n", x.Name, err.Error())
-		return err
+		//log.Printf("get node %s epoch at client error: %s\n", x.Name, err.Error())
+		//return err
+		return fmt.Errorf("%s", utility.GetGRPCStatusCode(err))
 	}
 	x.Epoch = resEpoch.Epochnum.Number
 
@@ -148,8 +148,9 @@ func (x *Node) getNodeVerAndStatus() error {
 	log.Println("starting get node version and status from ", grpcAddr)
 	conn, err := grpc.Dial(grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
-		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
-		return err
+		//log.Printf("get node %s version error: %s\n", x.Name, err.Error())
+		//return err
+		return fmt.Errorf("%s", utility.GetGRPCStatusCode(err))
 	}
 	defer conn.Close()
 
@@ -164,8 +165,9 @@ func (x *Node) getNodeVerAndStatus() error {
 	reqVer := &emptypb.Empty{}
 	resVer, err := client.Version(ctx, reqVer)
 	if err != nil {
-		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
-		return err
+		//log.Printf("get node %s version error: %s\n", x.Name, err.Error())
+		//return err
+		return fmt.Errorf("%s", utility.GetGRPCStatusCode(err))
 	}
 	x.NodeVer = resVer.VersionString.Value
 
@@ -184,8 +186,9 @@ func (x *Node) getNodeVerAndStatus() error {
 	resStatus, err := client.Status(ctx, reqStatus)
 
 	if err != nil {
-		log.Printf("get node %s version error: %s\n", x.Name, err.Error())
-		return err
+		//log.Printf("get node %s version error: %s\n", x.Name, err.Error())
+		//return err
+		return fmt.Errorf("%s", utility.GetGRPCStatusCode(err))
 	}
 
 	x.IsSynced = resStatus.Status.IsSynced

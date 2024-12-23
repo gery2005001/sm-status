@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sm-status/utility"
 	"sync"
 	"time"
 )
@@ -70,7 +71,7 @@ func (x *Post) fetchPostOperator(wg *sync.WaitGroup, ch chan string) {
 	if err != nil {
 		//log.Println("request operator failed:", err)
 		x.Status = ST_Failed
-		x.OaStatus = err.Error()
+		x.OaStatus = utility.GetHttpStatusCode(err)
 		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
@@ -80,7 +81,7 @@ func (x *Post) fetchPostOperator(wg *sync.WaitGroup, ch chan string) {
 	if err != nil {
 		//log.Println("request operator failed:", err)
 		x.Status = ST_Failed
-		x.OaStatus = err.Error()
+		x.OaStatus = utility.GetHttpStatusCode(err)
 		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
@@ -90,7 +91,7 @@ func (x *Post) fetchPostOperator(wg *sync.WaitGroup, ch chan string) {
 	if err != nil {
 		//log.Println("operator read body failed:", err)
 		x.Status = ST_Failed
-		x.OaStatus = err.Error()
+		x.OaStatus = utility.GetHttpStatusCode(err)
 		ch <- fmt.Sprintf("Post: %s OaStatus: %s", x.Title, x.OaStatus)
 		return
 	}
