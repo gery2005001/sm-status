@@ -2,49 +2,44 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"sm-status/utility"
-	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 // Post Status页面处理
-func postStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
-	config := GetConfig()
+// func postStatusWebSocketHandler(w http.ResponseWriter, r *http.Request) {
+// 	config := GetConfig()
 
-	// 将 HTTP 连接升级为 WebSocket 连接
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println("Failed to upgrade PS to WebSocket: ", err)
-		return
-	}
-	defer conn.Close()
+// 	// 将 HTTP 连接升级为 WebSocket 连接
+// 	conn, err := upgrader.Upgrade(w, r, nil)
+// 	if err != nil {
+// 		log.Println("Failed to upgrade PS to WebSocket: ", err)
+// 		return
+// 	}
+// 	defer conn.Close()
 
-	// // 获取当前状态的HTML字符串
-	htmlData := getPostStatusTableHTML()
-	// 向客户端发送数据
-	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-		log.Println("PS WebSocket Write failed:", err)
-	}
-	log.Println("PS WebSocket Write successfully")
+// 	// // 获取当前状态的HTML字符串
+// 	htmlData := getPostStatusTableHTML()
+// 	// 向客户端发送数据
+// 	if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
+// 		log.Println("PS WebSocket Write failed:", err)
+// 	}
+// 	log.Println("PS WebSocket Write successfully")
 
-	// 每隔指定时间推送状态
-	ticker := time.NewTicker(config.Interval * time.Second)
-	defer ticker.Stop()
+// 	// 每隔指定时间推送状态
+// 	ticker := time.NewTicker(config.Interval * time.Second)
+// 	defer ticker.Stop()
 
-	for range ticker.C {
-		htmlData = getPostStatusTableHTML()
-		//log.Println(htmlData)
-		// 向客户端发送数据
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
-			log.Println("PS WebSocket Write failed:", err)
-			return
-		}
-		log.Println("PS WebSocket Write successfully")
-	}
-}
+// 	for range ticker.C {
+// 		htmlData = getPostStatusTableHTML()
+// 		//log.Println(htmlData)
+// 		// 向客户端发送数据
+// 		if err := conn.WriteMessage(websocket.TextMessage, []byte(htmlData)); err != nil {
+// 			log.Println("PS WebSocket Write failed:", err)
+// 			return
+// 		}
+// 		log.Println("PS WebSocket Write successfully")
+// 	}
+// }
 
 // 根据config生成状态表HTML
 func getPostStatusTableHTML() string {

@@ -139,7 +139,7 @@ func (x *NetworkInfo) GetHtmlString() string {
 	if x.CurrenEpoch <= 0 || x.CurrentLayer <= 0 {
 		return ""
 	}
-	log.Printf("x.GetHtmlString: current epoch is %d, current layer is %d \n", x.CurrenEpoch, x.CurrentLayer)
+	log.Printf("NetworkInfo.GetHtmlString: current epoch is %d, current layer is %d \n", x.CurrenEpoch, x.CurrentLayer)
 	type Layers struct {
 		Name  string
 		Desc  string

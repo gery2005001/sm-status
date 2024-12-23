@@ -65,9 +65,9 @@ func main() {
 		http.HandleFunc("/post", postStatusHandler)
 		http.HandleFunc("/node", nodeStatusHandler)
 		http.HandleFunc("/chunk", chunkStatusHandler)
-		http.HandleFunc("/ps", postStatusWebSocketHandler)
-		http.HandleFunc("/ns", nodeStatusWebSocketHandler)
-		http.HandleFunc("/cs", chunkStatusWebSocketHandler)
+		//http.HandleFunc("/ps", postStatusWebSocketHandler)
+		//http.HandleFunc("/ns", nodeStatusWebSocketHandler)
+		//http.HandleFunc("/cs", chunkStatusWebSocketHandler)
 
 		port := fmt.Sprintf(":%d", appConfig.Port)
 		log.Printf("Server started at port %d", appConfig.Port)

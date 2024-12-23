@@ -78,6 +78,7 @@ func (x *Node) GetStatusColorCSS() string {
 
 // 清除node相关状态信息
 func (x *Node) setNodeToFailedStatus() {
+	log.Printf("Node: %s, set to failed state\n", x.Name)
 	x.Status = ST_Failed
 	x.Epoch = 0
 	x.SLayer = 0
@@ -567,20 +568,24 @@ func (x *Node) fetchNodePostOperatorStatus(w *sync.WaitGroup, c chan string) {
 
 // 获取Node所有信息
 func (x *Node) GetNodeAllInformation(w *sync.WaitGroup, c chan string) {
-	defer w.Done()
 	//从node获取当前Epoch
+	c <- fmt.Sprintf("Node: %s, start get all information", x.Name)
+	defer w.Done()
+
+	// 判断Node是否启动
 	if err := x.getCurrentEpoch(); err != nil {
 		x.setNodeToFailedStatus()
 		//log.Println(err)
 		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		log.Printf("Node: %s, error: %s", x.Name, err.Error())
 		return
 	}
-
 	//从node获取version和status
 	if err := x.getNodeVerAndStatus(); err != nil {
 		x.setNodeToFailedStatus()
 		//log.Println(err)
 		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+		log.Printf("Node: %s, error: %s", x.Name, err.Error())
 		return
 	}
 
