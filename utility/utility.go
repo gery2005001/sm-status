@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
+	"net/url"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -104,6 +106,18 @@ func GetHttpStatusCode(err error) string {
 		case errors.Is(err, io.EOF):
 			return "连接意外关闭"
 		default:
+			if _, ok := err.(net.Error); ok {
+				return "网络连接超时"
+			}
+
+			var urlErr *url.Error
+			if errors.As(err, &urlErr) {
+				if urlErr.Timeout() {
+					return "URL请求超时"
+				}
+				return fmt.Sprintf("URL错误: %v", urlErr)
+			}
+
 			return fmt.Sprintf("其他错误: %v\n", err)
 		}
 	}
