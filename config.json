@@ -95,7 +95,7 @@
           "operator-address": "http://192.168.31.230:50053/status"
         },
         {
-          "enable": true,
+          "enable": false,
           "title": "67180",
           "capacity": "1.0TB",
           "operator-address": "http://192.168.31.210:50051/status"
