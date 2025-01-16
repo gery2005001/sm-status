@@ -592,26 +592,31 @@ func (x *Node) GetNodeAllInformation(w *sync.WaitGroup, c chan string) {
 		return
 	}
 
-	//从node的9093端口获取post的publickeys
-	if err := x.getNodePostPublicKeys(); err != nil {
-		x.setAnPrivateNode()
-		//log.Println(err)
-		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
-		return
-	}
+	if x.IsSynced {
 
-	//从node的PostService中获取
-	if err := x.getPostInfoState(); err != nil {
-		//log.Println(err)
-		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
-		return
-	}
+		//从node的9093端口获取post的publickeys
+		if err := x.getNodePostPublicKeys(); err != nil {
+			x.setAnPrivateNode()
+			//log.Println(err)
+			c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+			return
+		}
 
-	//从node的AdminService的EventsStreams中获取rewards记录
-	if err := x.getEventsStreams(); err != nil {
-		//log.Println(err)
-		c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
-		return
+		//从node的PostService中获取
+		if err := x.getPostInfoState(); err != nil {
+			//log.Println(err)
+			c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+			return
+		}
+
+		//从node的AdminService的EventsStreams中获取rewards记录
+		if err := x.getEventsStreams(); err != nil {
+			//log.Println(err)
+			c <- fmt.Sprintf("Node: %s, error: %s", x.Name, err.Error())
+			return
+		}
+	} else {
+		log.Printf("Node: %s, not synchronized,skipping keys and rewards detection.\n", x.Name)
 	}
 
 	c <- fmt.Sprintf("Node: %s, get all information completed", x.Name)
