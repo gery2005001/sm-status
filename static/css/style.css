@@ -11,15 +11,16 @@ td {
   border: 1px solid black;
   padding: 2px 4px 2px 4px;
   text-align: center;
-  overflow: hidden;
+  /* overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: nowrap; */
 }
 th {
   background-color: #d9dedf;
 }
 span {
   white-space: nowrap;
+  margin-right: 1rem;
 }
 .st-column {
   width: 30px;
@@ -62,15 +63,21 @@ span {
 .td-left {
   text-align: left;
   max-width: 300px;
-  white-space: nowrap;
+  /* white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis; */
+  white-space: normal;
 }
 .td-rtl {
   direction: rtl;
 }
 .node-info {
+  text-align: left;
   background-color: #75b5fd; /* 旧颜色 #75b5fd*/
+  white-space: normal;
+  word-wrap: break-word; /* 允许单词换行 */
+  word-break: break-word; /* 强制长单词换行 */
+  white-space: normal; /* 允许换行 */
 }
 
 .btn-success {

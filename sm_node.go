@@ -463,18 +463,19 @@ func (x *Node) GetNodeStatusTableHTMLString() string {
 	}
 	//生成页面
 	htmlData := "<table>"
-	htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col classe=\"col-per-10\"><col classe=\"auto-column\"></colgroup>"
+	htmlData += "<colgroup><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-15\"><col class=\"col-per-20\"><col class=\"col-per-15\"><col class=\"col-per-10\"><col class=\"auto-column\"></colgroup>"
 	htmlData += "<thead>"
-	htmlData += "<tr class=\"node-info\"><td class=\"td-left\" colspan=\"7\">"
-	htmlData += fmt.Sprintf("<span>状态：<b>"+"<span class=\"%s\">%s</span></b></span>", nodeSTColor, nodeSyncedText)
-	htmlData += "<span>　Node名称：<b>" + x.Name + "</b></span>　<span>IP：<b>" + x.IP + "</b></span>"
-	htmlData += fmt.Sprintf("<span>　版本：<span class=\"%s\"><b>%s</b></span></span>", verSTColor, x.NodeVer)
-	htmlData += fmt.Sprintf("　<span><span>Peers：<b>%d</b></span>", x.Peers)
-	htmlData += fmt.Sprintf("　<span>Synced Layer：<b>%d</b></span>", x.SLayer)
-	htmlData += fmt.Sprintf("　<span>Top Layer：<b>%d</b></span>", x.TLayer)
-	htmlData += fmt.Sprintf("　<span>Verified Layer：<b>%d</b></span>", x.VLayer)
-	htmlData += fmt.Sprintf("　<span>Epoch：<b>%d</b></span>", x.Epoch)
+	htmlData += "<tr><td class=\"node-info\" colspan=\"7\">"
+	htmlData += fmt.Sprintf("<span>状态：<b class=\"%s\">%s</span></b></span>", nodeSTColor, nodeSyncedText)
+	htmlData += "<span>Node名称：<b>" + x.Name + "</b></span><span>IP：<b>" + x.IP + "</b></span>"
+	htmlData += fmt.Sprintf("<span>版本：<b class=\"%s\">%s</b></span>", verSTColor, x.NodeVer)
+	htmlData += fmt.Sprintf("<span>Peers：<b>%d</b></span>", x.Peers)
+	htmlData += fmt.Sprintf("<span>Synced Layer：<b>%d</b></span>", x.SLayer)
+	htmlData += fmt.Sprintf("<span>Top Layer：<b>%d</b></span>", x.TLayer)
+	htmlData += fmt.Sprintf("<span>Verified Layer：<b>%d</b></span>", x.VLayer)
+	htmlData += fmt.Sprintf("<span>Epoch：<b>%d</b></span>", x.Epoch)
 	htmlData += "</td></tr>"
+	htmlData += "</thead>"
 	if x.PostInfo != nil {
 		htmlData += "<thead><tr><th>KEY</th><th>Units</th><th>Size</th><th>State</th><th>Eligibilities</th><th>Publish</th><th>ID</th></tr></thead>"
 		htmlData += "<tbody>"

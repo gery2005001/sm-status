@@ -32,16 +32,17 @@ func getPostStatusTableHTML() string {
 			}
 			//生成页面
 			htmlData += "<table>"
-			htmlData += "<colgroup><col class=\"st-column\"><col class=\"col-per-15\"><col class=\"col-per-10\"><col classe=\"auto-column\"><col classe=\"auto-column\"></colgroup>"
+			htmlData += "<colgroup><col class=\"st-column\"><col class=\"col-per-15\"><col class=\"col-per-10\"><col class=\"auto-column\"><col class=\"auto-column\"></colgroup>"
 			htmlData += "<thead>"
-			htmlData += "<tr><td class=\"td-left node-info\" colspan=\"5\">"
-			htmlData += fmt.Sprintf("<span>状态：<b>"+"<span class=\"%s\">%s</span></b></span>", stColor, isSyncedText)
-			htmlData += "<span>　Node名称：<b>" + config.Node[n].Name + "</b></span>　<span>IP：<b>" + config.Node[n].IP + "</b></span>"
-			htmlData += fmt.Sprintf("<span>　版本：<span class=\"%s\"><b>%s</b></span></span>", verColor, config.Node[n].NodeVer)
-			htmlData += fmt.Sprintf("　<span><span>Peers：<b>%d</b></span>", config.Node[n].Peers)
-			htmlData += fmt.Sprintf("　<span>Synced Layer：<b>%d</b></span>", config.Node[n].SLayer)
-			htmlData += fmt.Sprintf("　<span>Top Layer：<b>%d</b></span>", config.Node[n].TLayer)
-			htmlData += fmt.Sprintf("　<span>Verified Layer：<b>%d</b></span>", config.Node[n].VLayer)
+			htmlData += "<tr><td class=\"node-info\" colspan=\"5\">"
+			htmlData += "<span>状态：<b class=\"" + stColor + "\">" + isSyncedText + "</b></span>"
+			htmlData += "<span>Node名称：<b>" + config.Node[n].Name + "</b></span>"
+			htmlData += "<span>IP：<b>" + config.Node[n].IP + "</b></span>"
+			htmlData += "<span>版本：<b class=\"" + verColor + "\">" + config.Node[n].NodeVer + "</b></span>"
+			htmlData += fmt.Sprintf("<span>Peers：<b>%d</b></span>", config.Node[n].Peers)
+			htmlData += fmt.Sprintf("<span>Synced Layer：<b>%d</b></span>", config.Node[n].SLayer)
+			htmlData += fmt.Sprintf("<span>Top Layer：<b>%d</b></span>", config.Node[n].TLayer)
+			htmlData += fmt.Sprintf("<span>Verified Layer：<b>%d</b></span>", config.Node[n].VLayer)
 			htmlData += "</td></tr>"
 			htmlData += "</thead>"
 			htmlData += "<thead><tr><th>ST</th><th>名称</th><th>容量</th><th>Operator</th><th>OperatorAddress</th></tr></thead>"
